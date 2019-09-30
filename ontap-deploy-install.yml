@@ -1,0 +1,11 @@
+---
+- name: Create ONTAP Select Deploy VM from OVA (ESXi)
+  hosts: "{{ target_vcenter_or_esxi_host }}" # from vars/vars_deploy.yml
+  gather_facts: false
+  connection: 'local'
+  vars_files:
+  - vars/vars_deploy.yml # All Variables
+  - vars/vars_deploy_pwd.yml # host_password & deploy_password
+  roles:
+    - na_ots_deploy
+

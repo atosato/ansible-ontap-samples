@@ -1,0 +1,18 @@
+target_vcenter_or_esxi_host: "{{ groups['vcenter'][0] }}" # vcenter-hostname - must be in DNS or hosts file
+host_login: "administrator@vsphere.local" # vcenter-username
+ovf_path: "OntapSelectOVA/ONTAPdeploy2.12.1.ova" # Ontap Deploy OVA image
+datacenter_name: "MyDatacenter" # Datacenter Name
+esx_cluster_name: "MyCluster-01" # VmWare Cluster Name
+datastore_name: "NetApp-HCI-Datastore-01" # Datastore for Ontap Deploy VM
+mgt_network: "VM_Network_1G" # Management Network Name
+deploy_name: "{{ groups['ontap_deploy'][0] }}" # Ontap Deploy Name - from inventory file
+deploy_ipAddress: "{{ hostvars[groups['ontap_deploy'][0]].ansible_host }}" # Ontap Deploy IP - from inventory file
+#deploy_ipAddress: "" # use DHCP
+deploy_gateway: "192.168.0.1" # Network Gateway
+deploy_proxy_url: "" # Network proxy
+deploy_netMask: "255.255.255.0" # Network NetMask
+deploy_product_company: "MyCompany" # Company Name
+deploy_primaryDNS: "192.168.0.2" # Primary DNS IP
+deploy_secondaryDNS: "192.168.0.3" # Secondary DNS IP
+deploy_searchDomains: "mydomain.lcl" # DNS search Domain
+

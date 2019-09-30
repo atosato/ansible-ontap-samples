@@ -1,0 +1,3 @@
+deploy_password: "password" # Will be set in Ontap Deploy
+host_password: "password" # VCenter password
+
