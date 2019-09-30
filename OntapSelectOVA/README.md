@@ -1,4 +1,4 @@
-This folder will contain your ONTAP Deploy Images.
+Place in this folder your ONTAP Deploy Images.
 
 ```
 OntapSelectOVA/
