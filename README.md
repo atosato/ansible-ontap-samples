@@ -2,7 +2,9 @@
 ----
 This repository contains samples playbook helping to automate the creation of an Ontap Select SDS cluster.
 
-To use these playboos you need to download the NetApp Ansible roles repository: <link>https://github.com/NetApp/ansible</link> and an Ontap Deploy OVA image.
+To use these playbook you need to download the NetApp Ansible roles repository: <link>https://github.com/NetApp/ansible</link> and an Ontap Deploy OVA image.
+
+Automate Ontap Select deployments could be useful to create an Ontap storage environment for testing purpose (90 days evaluation license provided with the image).
 
 Tested with:
  - Ansible 2.8.5
