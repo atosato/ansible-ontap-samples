@@ -9,23 +9,23 @@ Tested with:
 ----
 ## How to install Ontap Deploy
 
-Place your Ontap Deploy OVA image in OntapSelectOVA folder:
-'cp ONTAPdeployX.Y.Z.ova OntapSelectOVA/.'
+Place your Ontap Deploy OVA image in the OntapSelectOVA folder:
+`cp ONTAPdeployX.Y.Z.ova OntapSelectOVA/.`
 
 Edit the inventory.txt file with EXS information.
 Use a Deploy VM name and IP of you choice in this section:
-'''
+```
 [ontap_deploy]
 OntapDeploy-Ansible     ansible_host=<OntapDeploy_IP>
-'''
+```
 
 Edit vars/vars_deploy.yml with your environment variables.
 Edit vars/vars_deploy_pwd.yml with your ESX and Ontap Deploy password.
 
-Be sure that 'na_ots_deploy/' role is installed in the repository.
+Be sure that `na_ots_deploy/` role is installed in the repository.
 
 Run the playbook:
-'ansible-playbook -i inventory.txt ontap-deploy-install.yml'
+`ansible-playbook -i inventory.txt ontap-deploy-install.yml`
 
 (TODO) ## How to create a new Ontap Select cluster
 
