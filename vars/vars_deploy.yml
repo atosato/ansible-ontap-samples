@@ -6,7 +6,7 @@ esx_cluster_name: "MyCluster-01" # VmWare Cluster Name
 datastore_name: "NetApp-HCI-Datastore-01" # Datastore for Ontap Deploy VM
 mgt_network: "VM_Network_1G" # Management Network Name
 deploy_name: "{{ groups['ontap_deploy'][0] }}" # (from inventory.txt) Ontap Deploy Name
-deploy_ipAddress: "{{ hostvars[groups['ontap_deploy'][0]].ansible_host }}" # (from inventory.txt) Ontap Deploy IP - leave empty "" to use DHCP
+deploy_ipAddress: "{{ hostvars[groups['ontap_deploy'][0]].ansible_host }}" # (from inventory.txt) Ontap Deploy IP - "" to use DHCP
 deploy_gateway: "192.168.0.1" # Network Gateway
 deploy_proxy_url: "" # Network proxy
 deploy_netMask: "255.255.255.0" # Network NetMask
