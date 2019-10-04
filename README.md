@@ -31,6 +31,7 @@ ansible-playbook -i inventory.txt ontap-deploy-install.yml
 ```
 
 Access to Ontap Deploy using https://<OntapDeploy_IP> in your browser with username and password used in the vars files.
+
 ----
 ## How to create a new Ontap Select cluster
 
