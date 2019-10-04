@@ -24,14 +24,14 @@ Place Ontap Deploy OVA image in the OntapSelectOVA folder:
 
 Be sure that `na_ots_deploy/` role is installed in the repository. `cp ../NetApp-ansible-roles/na_ots_deploy . -r`
 
-- Edit the inventory.txt file with ESX cluster information and choose a Deploy VM name and IP in this section:
+- Edit the `inventory.txt` file with ESX cluster information and choose a Deploy VM name and IP in this section:
 ```
 [ontap_deploy]
 OntapDeploy-Ansible     ansible_host=<OntapDeploy_IP>
 ```
 
-- Edit vars/vars_deploy.yml with your environment variables.
-- Edit vars/vars_deploy_pwd.yml with your ESX and Ontap Deploy passwords.
+- Edit `vars/vars_deploy.yml` with your environment variables.
+- Edit `vars/vars_deploy_pwd.yml` with your ESX and Ontap Deploy passwords.
 
 **Run the playbook:**
 ```
@@ -45,9 +45,9 @@ Access to Ontap Deploy typing **https://<OntapDeploy_IP>** in your browser with 
 
 Be sure that `na_ots_cluster/` role is installed in the repository. `cp ../NetApp-ansible-roles/na_ots_cluster . -r`
 
-- Edit the inventory.txt file with ESX cluster and Ontap Deploy information.
-- Edit vars/vars_cluster.yml with your environment variables.
-- Edit vars/vars_cluster_pwd.yml with your Vcenter and Ontap passwords.
+- Edit the `inventory.txt` file with ESX cluster and Ontap Deploy information.
+- Edit `vars/vars_cluster.yml` with your environment variables.
+- Edit `vars/vars_cluster_pwd.yml` with your Vcenter and Ontap passwords.
 
 **Run the playbook:**
 ```
