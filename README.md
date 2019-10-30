@@ -1,6 +1,6 @@
 # Ontap Select - Ansible playbook samples
 ----
-This repository contains samples Ansible playbooks helping to automate the creation of an Ontap Select cluster, a Software-Defined Storage solution by NetApp.
+This repository contains Ansible playbooks helping to automate the creation of an Ontap Select cluster, a Software-Defined Storage solution by NetApp.
 
 Automate Ontap Select deployments could be useful to create an Ontap cluster environment for testing purpose (90 days evaluation license is provided with the image).
 

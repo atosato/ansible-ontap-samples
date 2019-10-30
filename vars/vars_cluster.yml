@@ -35,10 +35,10 @@ cluster_nodes:
     ipAddress: "192.168.0.252" # Node 01 cluster IP
     storage_pool: OntapSelectAnsibleDS01 # Node 01 Datastore
     capacityTB: 2.3 # Node 01 Aggregate size
-    host_name: "192.168.0.123" # Node 01 VM management IP
+    host_name: "{{ hostvars[groups['esx_hosts'][0]].ansible_host }}" # Node 01 ESX host to run
   - node_name: "{{ cluster_name }}-02" # Node 02 name
     ipAddress: "192.168.0.253" # Node 02 cluster IP
     storage_pool: OntapSelectAnsibleDS02 # Node 02 Datastore
     capacityTB: 2.3 # Node 02 Aggregate size
-    host_name: "192.168.0.124" # Node 02 VM management IP
+    host_name: "{{ hostvars[groups['esx_hosts'][1]].ansible_host }}" # Node 02 ESX host to run
 
