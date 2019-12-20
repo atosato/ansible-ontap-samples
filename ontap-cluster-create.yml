@@ -7,7 +7,27 @@
   # Read variable files
   # -------------------
   vars_files:
-  - vars/vars_cluster.yml
-  - vars/vars_cluster_pwd.yml
-  roles:
-    - na_ots_cluster
+    - vars/vars_cluster.yml
+    - vars/vars_cluster_pwd.yml
+  vars:
+    login: &login
+      hostname: "{{ cluster_ip }}"
+      username: "admin"
+      password: "{{ ontap_pwd }}"
+      https: yes
+      validate_certs: no
+  tasks:
+    - import_role:
+        name: na_ots_cluster
+
+    - name: Create Aggregates and wait 5 minutes until aggregate is online
+      na_ontap_aggregate:
+        state: present
+        service_state: online
+        nodes: "{{ item.node_name }}"
+        name: "{{ item.aggr_name }}"
+        disk_count: 1
+        wait_for_online: True
+        time_out: 300
+        <<: *login
+      loop: "{{ cluster_nodes }}"
