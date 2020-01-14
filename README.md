@@ -13,9 +13,22 @@ Download this playbook repository:
 git clone https://github.com/atosato/ansible-ontap-select.git ansible-ontap-select
 ```
 
+Added support for Python venv and pip-tools:
+```
+python3 -m venv env
+pip install pip-tools
+pip-compile requirements.in
+pip-sync
+```
+
 **Tested with:**
- - Ansible: 2.8.5
- - Ontap Deploy OVA: ONTAPdeploy2.12.1.ova
+ - Ansible:
+    * 2.8.5
+    * 2.9
+ - Ontap Deploy OVA: 
+    * ONTAPdeploy2.12.1.ova
+    * ONTAPSELECT9.7RC1.ova
+
 ----
 ## How to install Ontap Deploy
 
