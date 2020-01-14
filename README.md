@@ -16,6 +16,7 @@ git clone https://github.com/atosato/ansible-ontap-select.git ansible-ontap-sele
 Added support for Python venv and pip-tools:
 ```
 python3 -m venv env
+source venv/bin/activate
 pip install pip-tools
 pip-compile requirements.in
 pip-sync
