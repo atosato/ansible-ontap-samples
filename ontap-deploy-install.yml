@@ -1,6 +1,6 @@
 ---
 - name: Create ONTAP Select Deploy VM from OVA (ESXi)
-  hosts: "{{ target_vcenter_or_esxi_host }}" # from vars/vars_deploy.yml
+  hosts: "{{ target_vcenter_or_esxi_host }}" # Entry in Ansible 'hosts' file
   gather_facts: false
   connection: 'local'
   vars_files:
