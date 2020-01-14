@@ -1,0 +1,6 @@
+# requirements.in
+ansible
+requests
+pyvmomi
+netapp-lib
+
