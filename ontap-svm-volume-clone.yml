@@ -1,0 +1,34 @@
+# https://github.com/NetApp/ansible/tree/master/na_ontap_vserver_create
+
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_cluster.yml
+    - vars/vars_cluster_pwd.yml
+  vars:
+    svm_src: "svm-andrea-dr"
+    svm_clone: "svm-andrea-clone"
+    login: &login
+      hostname: "{{ cluster_ip }}"
+      username: "admin"
+      password: "{{ ontap_pwd }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Limit Info Gathering to specified fields
+    na_ontap_info:
+      state: info
+      <<: *login
+      gather_subset:
+        - volume_info
+    register: ontap_volume_info
+  - debug:
+      msg: "{{ ontap_volume_info.ontap_info }}"
+
+  - name: Loop over the Volume dictionary
+    debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
+    with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_src
