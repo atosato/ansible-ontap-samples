@@ -18,7 +18,7 @@
       https: yes
       validate_certs: no
   tasks:
-  - name: Limit Info Gathering to specified fields
+  - name: Get volume list
     na_ontap_info:
       state: info
       <<: *login
@@ -28,7 +28,17 @@
   - debug:
       msg: "{{ ontap_volume_info.ontap_info }}"
 
-  - name: Loop over the Volume dictionary
-    debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
+  - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
+    na_ontap_volume_clone:
+      state: present
+      <<: *login
+      vserver: "{{ svm_clone }}"
+      parent_vserver: "{{ svm_src }}"
+      parent_volume: "{{ item.value.volume_id_attributes.name }}"
+      parent_snapshot: "hourly.0"
+      name: "{{ item.value.volume_id_attributes.name }}"
+      space_reserve: none
+      junction_path: "/{{ item.value.volume_id_attributes.name }}"
     with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
     when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+#  - debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
