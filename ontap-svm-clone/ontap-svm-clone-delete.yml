@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars:
+    svm_src: "svm-dr"
+    svm_clone: "svm-clone"
+    login: &login
+      hostname: "10.xx.xx.xx"
+      username: "admin"
+      password: "password"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Get volume list
+    na_ontap_info:
+      state: info
+      <<: *login
+      gather_subset:
+        - volume_info
+        - cifs_share_info
+    register: ontap_info
+  - debug:
+      msg: "{{ ontap_info.ontap_info }}"
+
+  - name: Delete ALL CIFS shares in "{{ svm_clone }}"
+    na_ontap_cifs:
+      state: absent
+      share_name: "{{ item.value.share_name }}"
+      vserver: "{{ svm_clone }}"
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+
+  - name: Delete ALL Volumes in {{ svm_clone }}
+    na_ontap_volume:
+      state: absent
+      name: "{{ item.value.volume_id_attributes.name }}"
+      #aggregate_name: ansible_aggr
+      vserver: "{{ svm_clone }}"
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_src

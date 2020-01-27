@@ -1,5 +1,3 @@
-# https://github.com/NetApp/ansible/tree/master/na_ontap_vserver_create
-
 ---
 - hosts: localhost
   gather_facts: false
