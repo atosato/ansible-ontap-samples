@@ -5,16 +5,13 @@
   gather_facts: false
   collections:
     - netapp.ontap
-  vars_files:
-    - vars/vars_cluster.yml
-    - vars/vars_cluster_pwd.yml
   vars:
-    svm_src: "svm-andrea-dr"
-    svm_clone: "svm-andrea-clone"
+    svm_src: "svm-dr"
+    svm_clone: "svm-clone"
     login: &login
-      hostname: "{{ cluster_ip }}"
+      hostname: "10.xx.xx.xx"
       username: "admin"
-      password: "{{ ontap_pwd }}"
+      password: "password"
       https: yes
       validate_certs: no
   tasks:
@@ -28,17 +25,31 @@
   - debug:
       msg: "{{ ontap_volume_info.ontap_info }}"
 
-  - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
-    na_ontap_volume_clone:
-      state: present
-      <<: *login
-      vserver: "{{ svm_clone }}"
-      parent_vserver: "{{ svm_src }}"
-      parent_volume: "{{ item.value.volume_id_attributes.name }}"
-      parent_snapshot: "hourly.0"
-      name: "{{ item.value.volume_id_attributes.name }}"
-      space_reserve: none
-      junction_path: "/{{ item.value.volume_id_attributes.name }}"
+  - debug: msg="ssh {{ login.username }}@{{ login.hostname }} vol clone create -vserver {{ svm_clone }} -flexclone {{ item.value.volume_id_attributes.name }} -type RW -parent-vserver {{ svm_src }} -parent-volume {{ item.value.volume_id_attributes.name }} -parent-snapshot hourly.0 -junction-path /{{ item.value.volume_id_attributes.name }}"
     with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
     when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+
+  - name: Clone Volume from "{{ svm_src }}" to "{{ svm_clone }}"
+    na_ontap_command:
+      <<: *login
+      command: ['vol', 'clone', 'create -vserver {{ svm_clone }} -flexclone {{ item.value.volume_id_attributes.name }} -type RW -parent-vserver {{ svm_src }} -parent-volume {{ item.value.volume_id_attributes.name }} -parent-snapshot hourly.0 -junction-path /{{ item.value.volume_id_attributes.name }}']
+      privilege: 'admin'
+      return_dict: true
+
+    with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+
+  # - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
+  #   na_ontap_volume_clone:
+  #     state: present
+  #     <<: *login
+  #     vserver: "{{ svm_clone }}"
+  #     parent_vserver: "{{ svm_src }}"
+  #     parent_volume: "{{ item.value.volume_id_attributes.name }}"
+  #     parent_snapshot: "hourly.0"
+  #     name: "{{ item.value.volume_id_attributes.name }}"
+  #     space_reserve: none
+  #     junction_path: "/{{ item.value.volume_id_attributes.name }}"
+  #   with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
+  #   when: item.value.volume_id_attributes.owning_vserver_name == svm_src
 #  - debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
