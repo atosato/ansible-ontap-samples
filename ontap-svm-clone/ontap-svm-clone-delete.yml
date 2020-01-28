@@ -1,19 +1,22 @@
+###########################
+### WARNING: POSSIBLE DATA LOSS!!!!
+### This Playbook will delete any Share and Volume in the specified svm_clone vserver.
+###########################
 ---
 - hosts: localhost
   gather_facts: false
   collections:
     - netapp.ontap
   vars:
-    svm_src: "svm-dr"
-    svm_clone: "svm-clone"
+    svm_clone: "svm-andrea-clone"
     login: &login
-      hostname: "10.xx.xx.xx"
+      hostname: "10.67.199.247"
       username: "admin"
-      password: "password"
+      password: "netApp123!"
       https: yes
       validate_certs: no
   tasks:
-  - name: Get volume list
+  - name: Get volume and shares list
     na_ontap_info:
       state: info
       <<: *login
@@ -31,9 +34,9 @@
       vserver: "{{ svm_clone }}"
       <<: *login
     with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
-    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+    when: item.value.vserver == svm_clone and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
 
-  - name: Delete ALL Volumes in {{ svm_clone }}
+  - name: Delete ALL Volumes in "{{ svm_clone }}"
     na_ontap_volume:
       state: absent
       name: "{{ item.value.volume_id_attributes.name }}"
@@ -41,4 +44,4 @@
       vserver: "{{ svm_clone }}"
       <<: *login
     with_dict: "{{ ontap_info.ontap_info.volume_info }}"
-    when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_clone and item.value.volume_state_attributes.is_vserver_root == "false"

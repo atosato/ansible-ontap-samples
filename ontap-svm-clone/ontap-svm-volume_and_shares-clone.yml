@@ -4,28 +4,25 @@
   collections:
     - netapp.ontap
   vars:
-    svm_src: "svm-dr"
-    svm_clone: "svm-clone"
+    svm_src: "svm-andrea-dr"
+    svm_clone: "svm-andrea-clone"
     login: &login
-      hostname: "10.xx.xx.xx"
+      hostname: "10.67.199.247"
       username: "admin"
-      password: "password"
+      password: "netApp123!"
       https: yes
       validate_certs: no
   tasks:
-  - name: Get volume list
+  - name: Get Volumes and Shares list
     na_ontap_info:
       state: info
       <<: *login
       gather_subset:
         - volume_info
-    register: ontap_volume_info
+        - cifs_share_info
+    register: ontap_info
   - debug:
-      msg: "{{ ontap_volume_info.ontap_info }}"
-
-  - debug: msg="ssh {{ login.username }}@{{ login.hostname }} vol clone create -vserver {{ svm_clone }} -flexclone {{ item.value.volume_id_attributes.name }} -type RW -parent-vserver {{ svm_src }} -parent-volume {{ item.value.volume_id_attributes.name }} -parent-snapshot hourly.0 -junction-path /{{ item.value.volume_id_attributes.name }}"
-    with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
-    when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+      msg: "{{ ontap_info.ontap_info }}"
 
   - name: Clone Volume from "{{ svm_src }}" to "{{ svm_clone }}"
     na_ontap_command:
@@ -33,8 +30,7 @@
       command: ['vol', 'clone', 'create -vserver {{ svm_clone }} -flexclone {{ item.value.volume_id_attributes.name }} -type RW -parent-vserver {{ svm_src }} -parent-volume {{ item.value.volume_id_attributes.name }} -parent-snapshot hourly.0 -junction-path /{{ item.value.volume_id_attributes.name }}']
       privilege: 'admin'
       return_dict: true
-
-    with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
+    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
     when: item.value.volume_id_attributes.owning_vserver_name == svm_src
 
   # - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
@@ -51,3 +47,26 @@
   #   with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
   #   when: item.value.volume_id_attributes.owning_vserver_name == svm_src
 #  - debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
+
+  - name: Create CIFS shares from "{{ svm_src }}" to "{{ svm_clone }}"
+    na_ontap_cifs:
+      state: present
+      share_name: "{{ item.value.share_name }}"
+      path: "{{ item.value.path }}"
+      vserver: "{{ svm_clone }}"
+      share_properties: "{{ item.value.share_properties.cifs_share_properties }}"
+      symlink_properties: read_only,enable
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+
+  - name: Set ACL for each share
+    na_ontap_cifs_acl:
+      state: present
+      share_name: "{{ item.value.share_name }}"
+      vserver: "{{ svm_clone }}"
+      user_or_group: Everyone
+      permission: full_control
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
