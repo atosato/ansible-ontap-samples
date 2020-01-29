@@ -14,6 +14,10 @@ To create Python virtual environment follow these steps:
 python3 -m venv venv
 source venv/bin/activate
 pip install pip-tools
+pip-sync
+```
+If you want to update the requirements libs version
+```
 pip-compile requirements.in
 pip-sync
 ```
@@ -26,7 +30,7 @@ ansible-galaxy collection install netapp.ontap
 **Tested with:**
  - Ansible:
     * 2.8.5
-    * 2.9
+    * 2.9.2
  - Ansible Collections:
     * 20.2.0
  - Ontap Deploy OVA:
