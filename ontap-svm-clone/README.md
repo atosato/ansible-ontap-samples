@@ -27,7 +27,8 @@ ansible-playbook ontap-svm-volume_and_shares-clone.yml
 ```
 
 If the clone is created in a test environment you could use the following playbook to delete all Volumes and Shares existing in svm_clone:
-**WARNING: POSSIBLE DATA LOSS!!! - This playbook delete all the data present in the target SVM - Use it only in a TEST environment**
+
+**WARNING: POSSIBLE DATA LOSS!!! - This playbook delete all the data present in the target SVM - Use it in a TEST environment ONLY**
 ```
 ansible-playbook ontap-svm-clone-delete.yml
 ```
