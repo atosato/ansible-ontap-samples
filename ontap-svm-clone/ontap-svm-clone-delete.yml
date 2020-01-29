@@ -8,11 +8,11 @@
   collections:
     - netapp.ontap
   vars:
-    svm_clone: "svm-andrea-clone"
+    svm_clone: "svm-clone"
     login: &login
-      hostname: "10.67.199.247"
+      hostname: "10.xx.xx.xx"
       username: "admin"
-      password: "netApp123!"
+      password: "password"
       https: yes
       validate_certs: no
   tasks:

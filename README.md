@@ -11,7 +11,7 @@ git clone https://github.com/atosato/ansible-ontap-select.git ansible-ontap-sele
 
 To create Python virtual environment follow these steps:
 ```
-python3 -m venv env
+python3 -m venv venv
 source venv/bin/activate
 pip install pip-tools
 pip-compile requirements.in
