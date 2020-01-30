@@ -7,12 +7,13 @@
   gather_facts: false
   collections:
     - netapp.ontap
+  vars_files:
+    - vars/vars_clone.yml
   vars:
-    svm_clone: "svm-clone"
     login: &login
-      hostname: "10.xx.xx.xx"
-      username: "admin"
-      password: "password"
+      hostname: "{{ vars_hostname }}"
+      username: "{{ vars_username }}"
+      password: "{{ vars_password }}"
       https: yes
       validate_certs: no
   tasks:

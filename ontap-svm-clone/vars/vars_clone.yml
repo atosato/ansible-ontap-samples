@@ -1,0 +1,5 @@
+svm_src: "svm-dr"
+svm_clone: "svm-clone"
+vars_hostname: "xx.xx.xx.xx"
+vars_username: "admin"
+vars_password: "password"
