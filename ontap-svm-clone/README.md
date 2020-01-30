@@ -10,15 +10,13 @@ Ontap could automatically schedule hourly.0 creation changing the dafault naming
 cluster> vol modify -volume <vol_name> -vserver <svm_src> -sched-snap-name ordinal
 ```
 
-Edit vars with the ONTAP cluster information:
+Edit vars with the ONTAP cluster information: vars/vars_clone.yml
 ```
-vars:
-  svm_src: "svm-src-name" #<- SVM Source name or IP
-  svm_clone: "svm-clone-name" #<- SVM Clone name or IP
-  login: &login
-    hostname: "xx.xx.xx.xx" #<- ONTAP Cluster MGMT IP
-    username: "admin"
-    password: "password"
+  svm_src: "svm-src-name" <- SVM Source name or IP
+  svm_clone: "svm-clone-name" <- SVM Clone name or IP
+  hostname: "xx.xx.xx.xx" <- ONTAP Cluster MGMT IP
+  username: "admin"
+  password: "password"
 ```
 
 To clone Volumes and Shares from svm_src to svm_clone:
