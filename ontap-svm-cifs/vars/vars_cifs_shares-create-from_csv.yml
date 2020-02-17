@@ -1,5 +1,5 @@
-svm_target: "svm-andrea"
+svm_target: "svm-name"
 cifs_shares_cvs: "vars/cifs_shares.csv"
-vars_hostname: "10.67.199.254"
+vars_hostname: "10.XX.XX.XX"
 vars_username: "admin"
-vars_password: "netApp123!"
+vars_password: "password"
