@@ -1,0 +1,52 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_cifs_shares-create-from_csv.yml
+  vars:
+    login: &login
+      hostname: "{{ vars_hostname }}"
+      username: "{{ vars_username }}"
+      password: "{{ vars_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Read Shares from CSV file and return a dictionary
+    read_csv:
+      path: "{{ cifs_shares_cvs }}"
+      key: Share
+    register: shares
+    delegate_to: localhost
+
+  - debug:
+      msg: "Shares {{ shares }}"
+
+  - name: Show all pair Share and Path
+    debug:
+      msg: "CIFS Share: {{ item.value.Share }}, CIFS Path: {{ item.value.Path }}"
+    with_dict: "{{ shares.dict }}"
+
+  - name: Create CIFS shares to "{{ svm_target }}"
+    na_ontap_cifs:
+      state: present
+      share_name: "{{ item.value.Share }}"
+      path: "{{ item.value.Path }}"
+      vserver: "{{ svm_target }}"
+      share_properties: browsable,oplocks,show-previous-versions
+      symlink_properties: read_only,enable
+      <<: *login
+    with_dict: "{{ shares.dict }}"
+    when: item.value.Share != "c$" and item.value.Share != "admin$" and item.value.Share != "ipc$"
+
+  - name: Set ACL for each share
+    na_ontap_cifs_acl:
+      state: present
+      share_name: "{{ item.value.Share }}"
+      vserver: "{{ svm_target }}"
+      user_or_group: Everyone
+      permission: full_control
+      <<: *login
+    with_dict: "{{ shares.dict }}"
+    when: item.value.Share != "c$" and item.value.Share != "admin$" and item.value.Share != "ipc$"
