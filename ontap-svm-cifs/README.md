@@ -20,6 +20,7 @@ Share,Path
 admin$,/,
 c$,/,
 ipc$,/,
+share_name,/vol_name/folder_name
 ```
 
 ### Create CIFS Shares from CSV file:
