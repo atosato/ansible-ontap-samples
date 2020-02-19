@@ -1,5 +1,0 @@
-svm_target: "svm-name"
-cifs_shares_cvs: "vars/cifs_shares.csv"
-vars_hostname: "10.XX.XX.XX"
-vars_username: "admin"
-vars_password: "password"
