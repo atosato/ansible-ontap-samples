@@ -3,9 +3,9 @@ monitor_job: true
 monitor_deploy_job: true
 monitor_deploy_retries: 15
 deploy_api_url: "https://{{ hostvars[groups['ontap_deploy'][0]].ansible_host }}/api/v3" # (from inventory.txt) Ontap Deploy URL
-deploy_login: "admin" # Ontap Deploy username
+deploy_login: "admin" # Ontap Deploy admin user
 use_vcenter: true
-vcenter_login: "administrator@vsphere.local" # VCenter username
+vcenter_login: "administrator@vsphere.local" # VCenter admin user
 vcenter_name: "{{ groups['vcenter'][0] }}" # (from inventory.txt) VCenter hostname
 esxi_hosts: 
   - host_name: "{{ hostvars[groups['esx_hosts'][0]].ansible_host }}" # (from inventory.txt) first ESX server IP
