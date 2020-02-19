@@ -9,6 +9,13 @@
     - netapp.ontap
   vars_files:
     - vars/vars_clone.yml
+  vars_prompt:
+    - name: vars_username
+      prompt: "Insert cluster username:"
+      private: no
+      default: "admin"
+    - name: vars_password
+      prompt: "Insert cluster password:"
   vars:
     login: &login
       hostname: "{{ vars_hostname }}"
