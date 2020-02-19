@@ -6,7 +6,7 @@ Could be useful to use an Ontap Select cluster for testing purpose (90 days eval
 
 Clone this playbooks repository:
 ```
-git clone https://github.com/atosato/ansible-ontap-select.git ansible-ontap-select
+git clone https://github.com/atosato/ansible-ontap-samples.git ansible-ontap-samples
 ```
 
 To create Python virtual environment follow these steps:
