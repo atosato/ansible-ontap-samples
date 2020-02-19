@@ -1,0 +1,6 @@
+# var_files except Template
+**/vars/
+!*.Template
+
+# virtualenv
+venv/
