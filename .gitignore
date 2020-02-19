@@ -1,6 +1,6 @@
 # var_files but not Template
 **/vars/
-!*.Template
+!.Template
 
 # virtualenv
 venv/
