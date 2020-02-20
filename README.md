@@ -1,4 +1,4 @@
-# Ontap Select - Ansible playbook samples
+# Ansible playbook samples for NetApp Ontap
 ----
 This repository contains Ansible playbooks helping to automate tasks in a NetApp Ontap 9 Environment.
 
