@@ -15,7 +15,7 @@
   tasks:
   - name: Read Shares from CSV file and return a dictionary
     read_csv:
-      path: "{{ cifs_shares_cvs }}"
+      path: "{{ cifs_shares_csv }}"
       key: Share
     register: shares
     delegate_to: localhost

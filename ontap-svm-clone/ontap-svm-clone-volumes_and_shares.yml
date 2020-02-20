@@ -1,7 +1,3 @@
-###########################
-### WARNING: POSSIBLE DATA LOSS!!!!
-### This Playbook will delete any Share and Volume in the specified svm_clone vserver.
-###########################
 ---
 - hosts: localhost
   gather_facts: false
@@ -24,7 +20,7 @@
       https: yes
       validate_certs: no
   tasks:
-  - name: Get volume and shares list
+  - name: Get Volumes and Shares list
     na_ontap_info:
       state: info
       <<: *login
@@ -35,21 +31,49 @@
   - debug:
       msg: "{{ ontap_info.ontap_info }}"
 
-  - name: Delete ALL CIFS shares in "{{ svm_clone }}"
+  - name: Clone Volume from "{{ svm_src }}" to "{{ svm_clone }}"
+    na_ontap_command:
+      <<: *login
+      command: ['vol', 'clone', 'create -vserver {{ svm_clone }} -flexclone {{ item.value.volume_id_attributes.name }} -type RW -parent-vserver {{ svm_src }} -parent-volume {{ item.value.volume_id_attributes.name }} -parent-snapshot daily.0 -junction-path /{{ item.value.volume_id_attributes.name }}']
+      privilege: 'admin'
+      return_dict: true
+    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_src and item.value.volume_state_attributes.is_vserver_root == "false"
+
+  # - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
+  #   na_ontap_volume_clone:
+  #     state: present
+  #     <<: *login
+  #     vserver: "{{ svm_clone }}"
+  #     parent_vserver: "{{ svm_src }}"
+  #     parent_volume: "{{ item.value.volume_id_attributes.name }}"
+  #     parent_snapshot: "hourly.0"
+  #     name: "{{ item.value.volume_id_attributes.name }}"
+  #     space_reserve: none
+  #     junction_path: "/{{ item.value.volume_id_attributes.name }}"
+  #   with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
+  #   when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+#  - debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
+
+  - name: Create CIFS shares from "{{ svm_src }}" to "{{ svm_clone }}"
     na_ontap_cifs:
-      state: absent
+      state: present
       share_name: "{{ item.value.share_name }}"
+      path: "{{ item.value.path }}"
       vserver: "{{ svm_clone }}"
+      share_properties: "{{ item.value.share_properties.cifs_share_properties }}"
+      symlink_properties: read_only,enable
       <<: *login
     with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
-    when: item.value.vserver == svm_clone and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
 
-  - name: Delete ALL Volumes in "{{ svm_clone }}"
-    na_ontap_volume:
-      state: absent
-      name: "{{ item.value.volume_id_attributes.name }}"
-      #aggregate_name: ansible_aggr
+  - name: Set ACL for each share
+    na_ontap_cifs_acl:
+      state: present
+      share_name: "{{ item.value.share_name }}"
       vserver: "{{ svm_clone }}"
+      user_or_group: Everyone
+      permission: full_control
       <<: *login
-    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
-    when: item.value.volume_id_attributes.owning_vserver_name == svm_clone and item.value.volume_state_attributes.is_vserver_root == "false"
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
