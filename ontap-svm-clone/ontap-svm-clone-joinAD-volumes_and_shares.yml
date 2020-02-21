@@ -1,0 +1,138 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_clone.yml
+  vars_prompt:
+    - name: vars_username
+      prompt: "Insert NetApp Ontap cluster username:"
+      private: no
+      default: "admin"
+    - name: vars_password
+      prompt: "Insert NetApp Ontap cluster password:"
+      default: "{{ vars_password }}"
+    - name: AD_username
+      prompt: "Insert Active Directory username:"
+      private: no
+      default: "administrator"
+    - name: AD_password
+      prompt: "Insert Active Directory password:"
+  vars:
+    parent_snapshot: "daily.0"
+    login: &login
+      hostname: "{{ vars_hostname }}"
+      username: "{{ vars_username }}"
+      password: "{{ vars_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Get Volumes, CIFS Server and Shares list
+    na_ontap_info:
+      state: info
+      <<: *login
+      gather_subset:
+        - volume_info
+        - cifs_server_info
+        - cifs_share_info
+    register: ontap_info
+  - debug:
+      msg: "{{ ontap_info.ontap_info }}"
+  - debug:
+      msg: "{{ item.value }}"
+    with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+
+  - name: Banner message
+    pause:
+      prompt: "This playbook will join {{ svm_clone }} to Active Directory: {{ item.value.domain }} as {{ item.value.cifs_server }}"
+      seconds: 1
+    with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+
+  # - name: Active Directory username
+  #   pause:
+  #     prompt: "Insert {{ item.value.domain }} username:"
+  #   with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+  #   register: prompt_data
+  # - set_fact:
+  #     AD_username: "{{ item.value }}"
+  #   with_dict: "{{ prompt_data.results }}"
+  #   when: item.key == "user_input"
+  #
+  # - name: Active Directory password
+  #   pause:
+  #     prompt: "Insert {{ item.value.domain }} password:"
+  #     echo: "no"
+  #   with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+  #   register: prompt_data
+  # - set_fact:
+  #     AD_password: "{{ prompt_data.user_input }}"
+  #   with_dict: "{{ prompt_data.results }}"
+  #   when: item.key == "user_input"
+
+  - name: "Start {{ svm_clone }} vserver"
+    na_ontap_command:
+      command: ['vserver', 'start', '{{ svm_clone }}']
+      privilege: 'admin'
+      return_dict: true
+      <<: *login
+
+  - name: "Join {{ svm_clone }} to Active Directory: {{ item.value.domain }} as {{ item.value.cifs_server }}"
+    na_ontap_cifs_server:
+      state: present
+      service_state: started
+      vserver: "{{ svm_clone }}"
+      name: "{{ item.value.cifs_server }}"
+      domain: "{{ item.value.domain }}"
+      admin_user_name: "{{ AD_username }}"
+      admin_password: "{{ AD_password }}"
+      force: "yes"
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+
+  - name: Clone Volume from "{{ svm_src }}" to "{{ svm_clone }}"
+    na_ontap_command:
+      command: ['vol', 'clone', 'create -vserver {{ svm_clone }} -flexclone {{ item.value.volume_id_attributes.name }} -type RW -parent-vserver {{ svm_src }} -parent-volume {{ item.value.volume_id_attributes.name }} -parent-snapshot {{ parent_snapshot }} -junction-path /{{ item.value.volume_id_attributes.name }}']
+      privilege: 'admin'
+      return_dict: true
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_src and item.value.volume_state_attributes.is_vserver_root == "false"
+
+  # - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
+  #   na_ontap_volume_clone:
+  #     state: present
+  #     <<: *login
+  #     vserver: "{{ svm_clone }}"
+  #     parent_vserver: "{{ svm_src }}"
+  #     parent_volume: "{{ item.value.volume_id_attributes.name }}"
+  #     parent_snapshot: "hourly.0"
+  #     name: "{{ item.value.volume_id_attributes.name }}"
+  #     space_reserve: none
+  #     junction_path: "/{{ item.value.volume_id_attributes.name }}"
+  #   with_dict: "{{ ontap_volume_info.ontap_info.volume_info }}"
+  #   when: item.value.volume_id_attributes.owning_vserver_name == svm_src
+#  - debug: msg="Key={{ item.key }} value={{ item.value.volume_id_attributes.name }}"
+
+  - name: Create CIFS shares from "{{ svm_src }}" to "{{ svm_clone }}"
+    na_ontap_cifs:
+      state: present
+      share_name: "{{ item.value.share_name }}"
+      path: "{{ item.value.path }}"
+      vserver: "{{ svm_clone }}"
+      share_properties: "{{ item.value.share_properties.cifs_share_properties }}"
+      symlink_properties: read_only,enable
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+
+  - name: Set ACL for each share
+    na_ontap_cifs_acl:
+      state: present
+      share_name: "{{ item.value.share_name }}"
+      vserver: "{{ svm_clone }}"
+      user_or_group: Everyone
+      permission: full_control
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_src and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
