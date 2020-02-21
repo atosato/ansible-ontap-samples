@@ -7,11 +7,11 @@
     - vars/vars_clone.yml
   vars_prompt:
     - name: vars_username
-      prompt: "Insert cluster username:"
+      prompt: "Insert NetApp Ontap cluster username:"
       private: no
       default: "admin"
     - name: vars_password
-      prompt: "Insert cluster password:"
+      prompt: "Insert NetApp Ontap cluster password:"
   vars:
     parent_snapshot: "daily.0"
     login: &login
