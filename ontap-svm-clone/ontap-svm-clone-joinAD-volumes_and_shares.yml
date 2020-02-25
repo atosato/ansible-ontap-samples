@@ -12,6 +12,7 @@
       default: "admin"
     - name: vars_password
       prompt: "Insert NetApp Ontap cluster password:"
+      private: yes
       default: "{{ vars_password }}"
     - name: AD_username
       prompt: "Insert Active Directory username:"

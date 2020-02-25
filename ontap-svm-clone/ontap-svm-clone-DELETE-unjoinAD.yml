@@ -16,6 +16,7 @@
       default: "admin"
     - name: vars_password
       prompt: "Insert cluster password:"
+      default: "{{ vars_password }}"
   vars:
     login: &login
       hostname: "{{ vars_hostname }}"

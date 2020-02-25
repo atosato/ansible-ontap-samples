@@ -14,7 +14,7 @@ git clone https://github.com/NetApp/ansible.git NetApp-ansible-roles
     * 2.8.5
     * 2.9
  - Ontap Deploy OVA:
-    * ONTAPdeploy2.12.1.ova
+    * ONTAPdeploy2.12.12.3ova
     * ONTAPSELECT9.7RC1.ova
 
 ----
