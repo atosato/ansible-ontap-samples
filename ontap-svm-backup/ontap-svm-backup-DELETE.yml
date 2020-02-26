@@ -1,0 +1,46 @@
+###########################
+### WARNING: POSSIBLE DATA LOSS!!!!
+### This Playbook will delete any Share and Volume in the specified svm_clone vserver.
+###########################
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_clone_backup.yml
+  vars_prompt:
+    - name: vars_username
+      prompt: "Insert cluster username:"
+      private: no
+      default: "admin"
+    - name: vars_password
+      prompt: "Insert cluster password:"
+      default: "{{ vars_password }}"
+  vars:
+    login: &login
+      hostname: "{{ vars_hostname }}"
+      username: "{{ vars_username }}"
+      password: "{{ vars_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Get volume and shares list
+    na_ontap_info:
+      state: info
+      <<: *login
+      gather_subset:
+        - volume_info
+    register: ontap_info
+  - debug:
+      msg: "{{ ontap_info.ontap_info }}"
+
+  - name: Delete ALL Volumes in "{{ svm_clone }}"
+    na_ontap_volume:
+      state: absent
+      name: "{{ item.value.volume_id_attributes.name }}"
+      #aggregate_name: ansible_aggr
+      vserver: "{{ svm_clone }}"
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_clone and item.value.volume_state_attributes.is_vserver_root == "false"
