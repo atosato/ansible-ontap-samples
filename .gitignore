@@ -1,6 +1,9 @@
 #Ansible inventory
 inventory.txt
 
+# Netapp Ansible roles folders
+**/na_*
+
 # var_files but not Template
 **/vars/*
 !**/vars/*.Template
