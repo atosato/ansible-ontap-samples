@@ -52,6 +52,7 @@
   - name: Assign Export Policy {{ clone_export_policy }} to cloned Volumes
     na_ontap_volume:
       state: present
+      snapdir_access: no #Disable .snapshots to avoid Backup
       policy: "{{ clone_export_policy }}"
       name: "{{ item.value.volume_id_attributes.name }}"
       vserver: "{{ svm_clone }}"
