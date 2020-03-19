@@ -13,6 +13,7 @@ To create Python virtual environment follow these steps:
 ```
 python3 -m venv venv
 source venv/bin/activate
+pip3 install --upgrade pip setuptools wheel
 pip install pip-tools
 pip-sync
 ```
