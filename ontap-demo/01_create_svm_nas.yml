@@ -66,6 +66,16 @@
       size_unit: "gb"
       space_guarantee: none
       aggregate_name: "Aggr01"
-      #aggregate_name: ansible_aggr
       vserver: "{{ svm_1 }}"
+      junction_path: "/Vol_Data"
+      volume_security_style: ntfs
+      <<: *login
+
+  - name: Create CIFS share
+    na_ontap_cifs:
+      state: present
+      share_name: "Vol_Data"
+      path: "/Vol_Data"
+      vserver: "{{ svm_1 }}"
+      symlink_properties: read_only,enable
       <<: *login
