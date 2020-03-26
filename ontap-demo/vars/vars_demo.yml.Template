@@ -1,0 +1,31 @@
+#####################################################
+# Cluster Information
+#####################################################
+Cluster_IP: "192.168.1.251" #<- ONTAP Cluster MGMT IP
+
+
+#####################################################
+# Active Directory Information
+#####################################################
+AD: datafabric.lcl #<- Active Directory name or IP
+ntp_server:
+  - "192.168.0.21" # NTP server hostname or IP
+dns_ips:
+  - "192.168.0.21" # Primary DNS IP
+dns_domains:
+  - "datafabric.lcl" # DNS search Domain
+
+#####################################################
+# SVM Information
+#####################################################
+svm_1: "svm-nas" #<- SVM name
+svm_1_root: "svm_nas_root"
+svm_1_int_name: "svm_nas_data_LIF"
+svm_1_int_address: "192.168.1.241"
+svm_1_int_netmask: "255.255.254.0"
+svm_1_int_home_port: "e0a"
+svm_1_int_home_node: "OntapSelect-Ansible-ClusterA-01"
+svm_1_int_role: "data"
+svm_1_int_protocol: "cifs"
+svm_1_int_name: "svm_nas_data_LIF"
+svm_1_int_name: "svm_nas_data_LIF"

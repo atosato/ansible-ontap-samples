@@ -1,0 +1,61 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_demo.yml
+    - vars/vars_demo_login.yml
+  vars:
+    login: &login
+      hostname: "{{ Cluster_IP }}"
+      username: "{{ Cluster_username }}"
+      password: "{{ Cluster_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Create a new SVM
+    na_ontap_svm:
+      state: present
+      name: "{{ svm_1 }}"
+      root_volume: "{{ svm_1_root }}"
+      <<: *login
+
+  - name: Setup DNS for the SVM
+    na_ontap_dns:
+      state: present
+      vserver:  "{{ svm_1 }}"
+      domains: "{{ dns_domains }}"
+      nameservers: "{{ dns_ips }}"
+      skip_validation: true
+      <<: *login
+
+  - name: Create a new data LIF for the SVM
+    na_ontap_interface:
+      state: present
+      vserver: "{{ svm_1 }}"
+      interface_name: "{{ svm_1_int_name }}"
+      home_port: "{{ svm_1_int_home_port }}"
+      home_node: "{{ svm_1_int_home_node }}"
+      role: "{{ svm_1_int_role }}"
+      protocols: "{{ svm_1_int_protocol }}"
+      admin_status: up
+      is_auto_revert: true
+      address: "{{ svm_1_int_address }}"
+      netmask: "{{ svm_1_int_netmask }}"
+      dns_domain_name: "{{ dns_domains[0] }}"
+      #listen_for_dns_query: true
+      #is_dns_update_enabled: true
+      <<: *login
+
+  - name: "Join {{ svm_1 }} to Active Directory as {{ svm_1 }}"
+    na_ontap_cifs_server:
+      state: present
+      service_state: started
+      vserver: "{{ svm_1 }}"
+      name: "{{ svm_1 }}"
+      domain: "{{ AD }}"
+      admin_user_name: "{{ AD_username }}"
+      admin_password: "{{ AD_password }}"
+      force: "yes"
+      <<: *login
