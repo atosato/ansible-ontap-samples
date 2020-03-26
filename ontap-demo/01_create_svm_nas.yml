@@ -44,8 +44,6 @@
       address: "{{ svm_1_int_address }}"
       netmask: "{{ svm_1_int_netmask }}"
       dns_domain_name: "{{ dns_domains[0] }}"
-      #listen_for_dns_query: true
-      #is_dns_update_enabled: true
       <<: *login
 
   - name: "Join {{ svm_1 }} to Active Directory as {{ svm_1 }}"
@@ -58,4 +56,16 @@
       admin_user_name: "{{ AD_username }}"
       admin_password: "{{ AD_password }}"
       force: "yes"
+      <<: *login
+
+  - name: Create Volume Vol_Data
+    na_ontap_volume:
+      state: present
+      name: "Vol_Data"
+      size: "1000"
+      size_unit: "gb"
+      space_guarantee: none
+      aggregate_name: "Aggr01"
+      #aggregate_name: ansible_aggr
+      vserver: "{{ svm_1 }}"
       <<: *login
