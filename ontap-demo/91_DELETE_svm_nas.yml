@@ -8,9 +8,9 @@
     - vars/vars_demo_login.yml
   vars:
     login: &login
-      hostname: "{{ Cluster_IP }}"
-      username: "{{ Cluster_username }}"
-      password: "{{ Cluster_password }}"
+      hostname: "{{ Cluster_A_IP }}"
+      username: "{{ Cluster_A_username }}"
+      password: "{{ Cluster_A_password }}"
       https: yes
       validate_certs: no
   tasks:
@@ -22,8 +22,8 @@
         - volume_info
         - cifs_server_info
     register: ontap_info
-  - debug:
-      msg: "{{ ontap_info.ontap_info }}"
+  # - debug:
+  #     msg: "{{ ontap_info.ontap_info }}"
 
   - name: "Delete ALL CIFS shares in and UNJOIN from Active Directory"
     na_ontap_cifs_server:
