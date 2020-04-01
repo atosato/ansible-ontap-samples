@@ -1,0 +1,41 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_demo.yml
+    - vars/vars_demo_login.yml
+  vars:
+    login: &login
+      hostname: "{{ Cluster_B_IP }}"
+      username: "{{ Cluster_B_username }}"
+      password: "{{ Cluster_B_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Create a new SVM DR
+    na_ontap_svm:
+      state: present
+      name: "{{ svm_1 }}-dr"
+      subtype: "dp_destination"
+      <<: *login
+
+  - name: Create vserver Peer
+    na_ontap_vserver_peer:
+      state: present
+      peer_vserver: "{{ svm_1 }}"
+      peer_cluster: "{{ Cluster_A_name }}"
+      dest_hostname: "{{ Cluster_A_IP }}"
+      vserver: "{{ svm_1 }}-dr"
+      applications: snapmirror
+      <<: *login
+
+  - name: Create vserver SnapMirror DR
+    na_ontap_snapmirror:
+      state: present
+      source_vserver: "{{ svm_1 }}"
+      destination_vserver: "{{ svm_1 }}-dr"
+      identity_preserve: true
+      schedule: "5min"
+      <<: *login
