@@ -1,5 +1,8 @@
 Cluster_A_username: "admin" #<- Ontap cluster admin - SET ONLY IF vars_prompt NOT USED
 Cluster_A_password: "password" #<- Ontap cluster password - SET ONLY IF vars_prompt NOT USED
 
+Cluster_B_username: "admin" #<- Ontap cluster admin - SET ONLY IF vars_prompt NOT USED
+Cluster_B_password: "password" #<- Ontap cluster password - SET ONLY IF vars_prompt NOT USED
+
 AD_username: "Administrator"
 AD_password: "password"
