@@ -1,0 +1,41 @@
+node_count: 1 # 1 Ontap Select single instance -- 2 Ontap Select 2-nodes HA cluster
+monitor_job: true
+monitor_deploy_job: true
+monitor_deploy_retries: 15
+deploy_api_url: "https://{{ hostvars[groups['ontap_deploy'][0]].ansible_host }}/api/v3" # (from inventory.txt) Ontap Deploy URL
+deploy_login: "admin" # Ontap Deploy username
+use_vcenter: true
+vcenter_login: "administrator@vsphere.local" # VCenter username
+vcenter_name: "{{ groups['vcenter'][0] }}" # (from inventory.txt) VCenter hostname
+esxi_hosts:
+  - host_name: "{{ hostvars[groups['esx_hosts'][0]].ansible_host }}" # (from inventory.txt) first ESX server IP
+  - host_name: "{{ hostvars[groups['esx_hosts'][1]].ansible_host }}" # (from inventory.txt) second ESX server IP
+
+# ------------
+# Cluster Info
+# ------------
+cluster_name: "OntapSelect-ClusterA" # Ontap Select cluster name
+cluster_ip: "192.168.1.251" # Ontap Select cluster management IP
+cluster_netmask: "255.255.254.0" # Ontap Select cluster management network netmask
+cluster_gateway: "192.168.0.1" # Ontap Select cluster network gateway
+cluster_ontap_image: "9.7" # Ontap Select version - Check which Ontap versions are included in the Ontap Deploy image.
+cluster_ntp:
+  - "192.168.0.21" # NTP server hostname or IP
+cluster_dns_ips:
+  - "192.168.0.21" # Primary DNS IP
+cluster_dns_domains:
+  - "datafabric.lcl" # DNS search Domain
+
+mgt_network: "NetApp HCI VDS 01-Management Network" # VM management Network Name
+data_network: "NetApp HCI VDS 01-iSCSI-A" # VM Data Network Name
+internal_network: "NetApp HCI VDS 01-Management Network" # VM Ontap Intracluster Network
+
+instance_type: "small" # "small" 4xVcpu 16GB RAM
+
+cluster_nodes:
+  - node_name: "{{ cluster_name }}-01" # Node 01 name
+    ipAddress: "192.168.1.231" # Node 01 management IP
+    storage_pool: "OntapSelectAnsibleDS01" # Node 01 Datastore
+    aggr_name: "Aggr01"
+    capacityTB: 2.3 # Node 01 Aggregate size
+    host_name: "{{ hostvars[groups['esx_hosts'][0]].ansible_host }}" # ESX host to run the Ontap Node
