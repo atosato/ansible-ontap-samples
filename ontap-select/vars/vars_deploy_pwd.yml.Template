@@ -1,3 +1,0 @@
-deploy_password: "password" # This password will be set in Ontap Deploy
-host_password: "vc_password" # VCenter password
-

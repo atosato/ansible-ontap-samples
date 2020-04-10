@@ -1,5 +1,0 @@
-deploy_pwd: "password"
-vcenter_password: "vc_password"
-ontap_pwd: "password" # This password will be set for Ontap Select admin user
-host_esx_password: "esx_password" # ESX node password
-host_kvm_password: ""
