@@ -30,14 +30,14 @@ ansible-galaxy collection install netapp.ontap
 
 **Tested with:**
  - Ansible:
-    * 2.8.5
+    * 2.9.9
     * 2.9.6
  - Ansible Collections:
-    * 20.2.0
+    * 20.5.0
     * 20.3.0
  - Ontap Deploy OVA:
+    * ONTAPSELECT9.7.ova
     * ONTAPdeploy2.12.1.ova
-    * ONTAPSELECT9.7RC1.ova
 
 
 ----
