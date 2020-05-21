@@ -1,3 +1,7 @@
+###########################
+### WARNING: POSSIBLE DATA LOSS!!!!
+### This Playbook will delete any Share and Volume in the specified svm_clone vserver.
+###########################
 ---
 - hosts: localhost
   gather_facts: false
@@ -7,6 +11,8 @@
     - vars/vars_demo.yml
     - vars/vars_demo_login.yml
   vars:
+    svm_src: "{{ svm_1 }}-dr"
+    svm_clone: "{{ svm_DR_clone }}"
     login: &login
       hostname: "{{ Cluster_B_IP }}"
       username: "{{ Cluster_B_username }}"
@@ -14,25 +20,38 @@
       https: yes
       validate_certs: no
   tasks:
-  - name: Get Ontap Info
+  - name: Get volume and shares list
     na_ontap_info:
       state: info
       <<: *login
       gather_subset:
         - volume_info
         - cifs_server_info
+        - cifs_share_info
     register: ontap_info
 #  - debug:
 #     msg: "{{ ontap_info.ontap_info }}"
 
-  - name: "Delete ALL CIFS shares in and UNJOIN from Active Directory"
+  - name: Delete ALL CIFS shares in "{{ svm_clone }}"
+  # NOTE: The AD Unjoin task will remove all the shares so this task is useless. Kept for demo usage.
+    na_ontap_cifs:
+      state: absent
+      share_name: "{{ item.value.share_name }}"
+      vserver: "{{ svm_clone }}"
+      <<: *login
+    with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
+    when: item.value.vserver == svm_clone and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+
+  - name: "UNJOIN from Active Directory"
     na_ontap_cifs_server:
       state: absent
       vserver: "{{ svm_DR_clone }}"
       name: "{{ svm_DR_clone }}"
       domain: "{{ item.value.domain }}"
-      admin_user_name: "" #Force unjoin withouth a login
-      admin_password: ""
+      #admin_user_name: "" #Force unjoin withouth a login
+      #admin_password: ""
+      admin_user_name: "{{ AD_username }}"
+      admin_password: "{{ AD_password }}"
       force: "yes"
       <<: *login
     with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
