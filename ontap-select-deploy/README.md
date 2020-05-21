@@ -9,14 +9,6 @@ To use these playbooks you need to download the **NetApp Ansible roles repositor
 git clone https://github.com/NetApp/ansible.git NetApp-ansible-roles
 ```
 
-**Tested with:**
- - Ansible:
-    * 2.8.5
-    * 2.9
- - Ontap Deploy OVA:
-    * ONTAPdeploy2.12.12.3ova
-    * ONTAPSELECT9.7RC1.ova
-
 ----
 ## How to install Ontap Deploy
 
@@ -36,7 +28,7 @@ OntapDeploy-Ansible     ansible_host=<OntapDeploy_IP>
 
 **Run the playbook:**
 ```
-ansible-playbook -i inventory.txt ontap-deploy-install.yml
+ansible-playbook -i inventory.txt 01_ontap-deploy-install.yml
 ```
 
 Access to Ontap Deploy typing **https://<OntapDeploy_IP>** in your browser with username and password used in the vars files.
@@ -52,7 +44,8 @@ Be sure that `na_ots_cluster/` role is installed in the repository. `cp ../NetAp
 
 **Run the playbook:**
 ```
-ansible-playbook -i inventory.txt ontap-cluster-create.yml
+ansible-playbook -i inventory.txt 02_create_OntapSelect-ClusterA.yml
+ansible-playbook -i inventory.txt 03_create_OntapSelect-ClusterB.yml
 ```
 
 The new Ontap Select cluster will appear in the Ontap Deploy Dashbord.
