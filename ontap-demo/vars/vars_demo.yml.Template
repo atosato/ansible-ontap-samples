@@ -5,7 +5,7 @@ Cluster_A_name: "OntapSelect-Ansible-ClusterA" #<- ONTAP Cluster MGMT IP
 Cluster_A_IP: "192.168.1.251" #<- ONTAP Cluster MGMT IP
 
 #####################################################
-# Cluster A Information
+# Cluster B Information
 #####################################################
 Cluster_B_name: "OntapSelect-Ansible-ClusterB" #<- ONTAP Cluster MGMT IP
 Cluster_B_IP: "192.168.1.252" #<- ONTAP Cluster MGMT IP
