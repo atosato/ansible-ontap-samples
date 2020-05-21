@@ -2,6 +2,7 @@
 ----
 This repository contains Ansible playbooks helping to automate the creation of an CIFS SVM (vserver) DR and an SVM Clone to check if the Disaster Recovery replicas are working fine..
 
+### Requirements:
 To use these playbooks a snapshot named **daily.0** must exist in each svm_src volume on production SVM.
 Ontap could automatically schedule daily.0 creation changing the dafault naming convention:
 ```
