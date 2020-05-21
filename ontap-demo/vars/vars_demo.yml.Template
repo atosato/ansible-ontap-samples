@@ -22,7 +22,7 @@ dns_domains:
   - "datafabric.lcl" # DNS search Domain
 
 #####################################################
-# SVM 1 Information
+# SVM 1 - SVM source (production) Information
 #####################################################
 svm_1: "svm-nas" #<- SVM name
 svm_1_root: "svm_nas_root"
@@ -48,16 +48,3 @@ svm_DR_clone_int_home_node: "OntapSelect-Ansible-ClusterB-01"
 svm_DR_clone_int_role: "data"
 svm_DR_clone_int_protocol: "cifs"
 
-
-#####################################################
-# SVM Andrea Information
-#####################################################
-svm_2: "svm-andrea" #<- SVM name
-svm_2_root: "svm_andrea_root"
-svm_2_int_name: "svm_andrea_data_LIF"
-svm_2_int_address: "192.168.1.242"
-svm_2_int_netmask: "255.255.254.0"
-svm_2_int_home_port: "e0a"
-svm_2_int_home_node: "OntapSelect-Ansible-ClusterA-01"
-svm_2_int_role: "data"
-svm_2_int_protocol: "cifs"
