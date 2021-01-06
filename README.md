@@ -1,10 +1,11 @@
 # Ansible playbook samples for NetApp Ontap
 ----
-This repository contains Ansible playbook to automate some tasks in a NetApp ONTAP 9 environment.
+This repository contains Ansible playbooks to automate some tasks in a NetApp ONTAP 9 environment.
 
 To try these samples you can use an Ontap Select VM for testing (90 days evaluation license is provided with the image).
 
-As a quick setup guide follow these steps:
+For a quick setup follow these steps:
+
 Clone this github repository:
 ```
 git clone https://github.com/atosato/ansible-ontap-samples.git ansible-ontap-samples
