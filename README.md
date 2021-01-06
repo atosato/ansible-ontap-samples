@@ -1,15 +1,16 @@
 # Ansible playbook samples for NetApp Ontap
 ----
-This repository contains Ansible playbooks helping to automate tasks in a NetApp Ontap 9 Environment.
+This repository contains Ansible playbook to automate some tasks in a NetApp ONTAP 9 environment.
 
-Could be useful to use an Ontap Select cluster for testing purpose (90 days evaluation license is provided with the image).
+To try these samples you can use an Ontap Select VM for testing (90 days evaluation license is provided with the image).
 
-Clone this playbooks repository:
+As a quick setup guide follow these steps:
+Clone this github repository:
 ```
 git clone https://github.com/atosato/ansible-ontap-samples.git ansible-ontap-samples
 ```
 
-To create Python virtual environment follow these steps:
+Create a Python virtual environment:
 ```
 python3 -m venv venv
 source venv/bin/activate
@@ -17,13 +18,13 @@ pip3 install --upgrade pip setuptools wheel
 pip install pip-tools
 pip-sync
 ```
-If you want to update the requirements libs version
+If you want to update the requirements libs version:
 ```
 pip-compile requirements.in
 pip-sync
 ```
 
-To use these playbooks you need to download the **NetApp Ansible collection repository**: <link>https://github.com/ansible-collections/ansible_collections_netapp</link>.
+To use these playbooks you need to download the **NetApp Ansible ONTAP collection**: <link>https://github.com/ansible-collections/ansible_collections_netapp</link>.
 ```
 ansible-galaxy collection install netapp.ontap
 ```
