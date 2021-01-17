@@ -11,7 +11,7 @@ chardet==3.0.4            # via requests
 cryptography==3.2         # via ansible
 idna==2.9                 # via requests
 jinja2==2.11.2            # via ansible
-lxml==4.5.1               # via netapp-lib
+lxml==4.6.2               # via netapp-lib
 markupsafe==1.1.1         # via jinja2
 netapp-lib==2020.3.12     # via -r requirements.in
 pycparser==2.20           # via cffi
