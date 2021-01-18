@@ -7,4 +7,4 @@ esx2	ansible_host=<ESX2_IP>
 
 
 [ontap_deploy]
-<ontap_select_cluster_name>	ansible_host=<ontap_select_cluster_IP>
+<ontap_select_deploy_name>	ansible_host=<ontap_select_deploy_IP>
