@@ -2,9 +2,9 @@
 ----
 This repository contains Ansible playbooks to automate some tasks in a NetApp ONTAP 9 environment.
 
-To try these samples you can use an Ontap Select VM for testing (90 days evaluation license is provided with the image).
+To try these samples you can use Ontap Selelect, a 90 days evaluation license is provided with the image.
 
-For a quick setup follow these steps:
+For a quick repository setup follow these steps.
 
 Clone this github repository:
 ```
@@ -25,21 +25,21 @@ pip-compile requirements.in
 pip-sync
 ```
 
-To use these playbooks you need to download the **NetApp Ansible ONTAP collection**: <link>https://github.com/ansible-collections/ansible_collections_netapp</link>.
+To use these playbooks you need to install the **NetApp Ansible ONTAP collection**: <link>https://github.com/ansible-collections/ansible_collections_netapp</link>.
 ```
 ansible-galaxy collection install netapp.ontap
 ```
 
 **Tested with:**
  - Ansible:
+    * 2.10.4
     * 2.9.9
-    * 2.9.6
  - Ansible Collections:
+    * 20.12.0
     * 20.5.0
-    * 20.3.0
  - Ontap Deploy OVA:
+    * ONTAPSELECT9.8.ova
     * ONTAPSELECT9.7.ova
-    * ONTAPdeploy2.12.1.ova
 
 
 ----
