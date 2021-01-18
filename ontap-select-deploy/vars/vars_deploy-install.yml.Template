@@ -1,6 +1,6 @@
 target_vcenter_or_esxi_host: "{{ groups['vcenter'][0] }}" # (from inventory.txt) vcenter-hostname - must be in DNS or hosts file
 host_login: "administrator@vsphere.local" # vcenter-username
-ovf_path: "OntapSelectOVA/ONTAPdeploy2.12.1.ova" # Ontap Deploy OVA image path
+ovf_path: "OntapSelectOVA/ONTAPIMAGE.ova" # Ontap Deploy OVA image path
 datacenter_name: "MyDatacenter" # Datacenter Name
 esx_cluster_name: "MyCluster-01" # VmWare Cluster Name
 datastore_name: "NetApp-HCI-Datastore-01" # Datastore for Ontap Deploy VM
