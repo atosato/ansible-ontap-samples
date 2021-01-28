@@ -4,6 +4,7 @@
 #
 #    pip-compile
 #
+<<<<<<< HEAD
 ansible-base==2.10.4
     # via ansible
 ansible==2.10.5
@@ -48,3 +49,22 @@ urllib3==1.26.2
     # via requests
 xmltodict==0.12.0
     # via netapp-lib
+=======
+ansible==2.9.9            # via -r requirements.in
+certifi==2020.4.5.1       # via requests
+cffi==1.14.0              # via cryptography
+chardet==3.0.4            # via requests
+cryptography==3.2         # via ansible
+idna==2.9                 # via requests
+jinja2==2.11.2            # via ansible
+lxml==4.6.2               # via netapp-lib
+markupsafe==1.1.1         # via jinja2
+netapp-lib==2020.3.12     # via -r requirements.in
+pycparser==2.20           # via cffi
+pyvmomi==7.0              # via -r requirements.in
+pyyaml==5.3.1             # via ansible
+requests==2.23.0          # via -r requirements.in, pyvmomi
+six==1.14.0               # via cryptography, pyvmomi
+urllib3==1.25.9           # via requests
+xmltodict==0.12.0         # via netapp-lib
+>>>>>>> 2968a1edbf1fa7d22430fbca432ecacb3cca01ae
