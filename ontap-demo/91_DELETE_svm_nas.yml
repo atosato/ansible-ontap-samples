@@ -31,8 +31,8 @@
       vserver: "{{ svm_1 }}"
       name: "{{ item.value.cifs_server }}"
       domain: "{{ item.value.domain }}"
-      admin_user_name: "" #Force unjoin withouth a login
-      admin_password: ""
+      admin_user_name: "{{ AD_username }}" #Force unjoin withouth a login
+      admin_password: "{{ AD_password }}"
       force: "yes"
       <<: *login
     with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
