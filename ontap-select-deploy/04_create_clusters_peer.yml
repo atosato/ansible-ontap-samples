@@ -1,0 +1,29 @@
+---
+- name: Create ONTAP Clusters Peering
+  hosts: "localhost"
+  gather_facts: false
+  collections:
+    - netapp.ontap
+
+  # -------------------
+  # Read variable files
+  # -------------------
+  vars_files:
+    - vars/vars_cluster_pwd.yml
+    - vars/vars_intercluster_IPs.yml
+  vars:
+    login: &login
+      hostname: "{{ src_cluster_ip }}"
+      username: "admin"
+      password: "{{ ontap_pwd }}"
+      https: yes
+      validate_certs: no
+  tasks:
+    - name: Create clusters peer
+      na_ontap_cluster_peer:
+        state: present
+        source_intercluster_lifs: "{{ src_intercluster_ipAddress }}"
+        dest_intercluster_lifs: "{{ dst_intercluster_ipAddress }}"
+        passphrase: "Passphrase123"
+        <<: *login
+        dest_hostname: "{{ dst_cluster_ip }}"
