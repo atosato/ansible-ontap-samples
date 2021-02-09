@@ -2,6 +2,8 @@
 - name: Create ONTAP Select cluster (ESXi)
   hosts: "localhost"
   gather_facts: false
+  collections:
+    - netapp.ontap
 
   # -------------------
   # Read variable files
@@ -9,6 +11,7 @@
   vars_files:
     - vars/vars_OntapSelect-ClusterA.yml
     - vars/vars_cluster_pwd.yml
+    - vars/vars_intercluster_IPs.yml
   vars:
     login: &login
       hostname: "{{ cluster_ip }}"
@@ -29,5 +32,21 @@
         disk_count: 1
         wait_for_online: True
         time_out: 300
+        <<: *login
+      loop: "{{ cluster_nodes }}"
+
+    - name: Create InterCluster interface
+      na_ontap_interface:
+        state: present
+        interface_name: Intercluster_LIF
+        home_port: e0c
+        home_node: "{{ item.node_name }}"
+        role: intercluster
+        admin_status: up
+        is_auto_revert: true
+        address: "{{ src_intercluster_ipAddress }}"
+        netmask: 255.255.255.0
+        force_subnet_association: false
+        vserver: "{{ cluster_name }}"
         <<: *login
       loop: "{{ cluster_nodes }}"
