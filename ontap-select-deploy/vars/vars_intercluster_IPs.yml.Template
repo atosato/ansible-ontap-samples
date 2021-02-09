@@ -1,0 +1,5 @@
+    src_cluster_ip: "192.168.1.251"
+    src_intercluster_ipAddress: "10.0.0.141" # Source cluster intercluster IP
+    dst_cluster_ip: "192.168.1.252"
+    dst_intercluster_ipAddress: "10.0.0.142" # Destination cluster intercluster IP
+    
