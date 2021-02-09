@@ -34,7 +34,7 @@ instance_type: "small" # "small" 4xVcpu 16GB RAM
 
 cluster_nodes:
   - node_name: "{{ cluster_name }}-01" # Node 01 name
-    ipAddress: "192.168.1.232" # Node 02 management IP
+    ipAddress: "192.168.1.232" # Node 01 management IP
     storage_pool: "OntapSelectAnsibleDS02" # Node 01 Datastore
     aggr_name: "Aggr02"
     capacityTB: 2.3 # Node 01 Aggregate size
