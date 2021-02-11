@@ -22,8 +22,8 @@
     - name: Create clusters peer
       na_ontap_cluster_peer:
         state: present
+        dest_hostname: "{{ dst_cluster_ip }}"
         source_intercluster_lifs: "{{ src_intercluster_ipAddress }}"
         dest_intercluster_lifs: "{{ dst_intercluster_ipAddress }}"
         passphrase: "Passphrase123"
         <<: *login
-        dest_hostname: "{{ dst_cluster_ip }}"
