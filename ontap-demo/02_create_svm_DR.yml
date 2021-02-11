@@ -28,7 +28,7 @@
       peer_cluster: "{{ Cluster_A_name }}"
       dest_hostname: "{{ Cluster_A_IP }}"
       vserver: "{{ svm_1 }}-dr"
-      applications: snapmirror
+      applications: ["snapmirror"]
       <<: *login
 
   - name: Create vserver SnapMirror DR
