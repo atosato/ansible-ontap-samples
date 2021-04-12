@@ -2,20 +2,25 @@
 ----
 This repository contains Ansible playbooks helping to automate the creation of an CIFS SVM (vserver) DR and an SVM Clone to check if the Disaster Recovery replicas are working fine..
 
+Edit vars with the ONTAP cluster information: vars/vars_demo.yml
+Edit vars with the ONTAP cluster Login information: vars/vars_demo_login.yml
+
+### Create production NAS SVM:
+```
+ansible-playbook 01_create_svm_nas.yml
+```
+The playbook create an SVL with one volume and a share named Vol_Data.
+
+### Create SVM DR:
+```
+ansible-playbook 02_create_svm_DR.yml
+```
+
 ### Requirements:
 To use these playbooks a snapshot named **daily.0** must exist in each svm_src volume on production SVM.
 Ontap could automatically schedule daily.0 creation changing the dafault naming convention:
 ```
 cluster> vol modify -volume <vol_name> -vserver <svm_src> -sched-snap-name ordinal
-```
-
-Edit vars with the ONTAP cluster information: vars/vars_demo.yml
-Edit vars with the ONTAP cluster Login information: vars/vars_demo_login.yml
-
-
-### Create SVM DR:
-```
-ansible-playbook 02_create_svm_DR.yml
 ```
 
 ### Create a cloned SVM to test the DR environment:
