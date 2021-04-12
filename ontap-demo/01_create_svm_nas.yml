@@ -34,15 +34,15 @@
     na_ontap_interface:
       state: present
       vserver: "{{ svm_1 }}"
-      interface_name: "{{ svm_1_int_name }}"
-      home_port: "{{ svm_1_int_home_port }}"
-      home_node: "{{ svm_1_int_home_node }}"
-      role: "{{ svm_1_int_role }}"
-      protocols: "{{ svm_1_int_protocol }}"
+      interface_name: "{{ svm_1_lif_name }}"
+      home_port: "{{ svm_1_lif_home_port }}"
+      home_node: "{{ svm_1_lif_home_node }}"
+      role: "{{ svm_1_lif_role }}"
+      protocols: "{{ svm_1_lif_protocol }}"
       admin_status: up
       is_auto_revert: true
-      address: "{{ svm_1_int_address }}"
-      netmask: "{{ svm_1_int_netmask }}"
+      address: "{{ svm_1_lif_address }}"
+      netmask: "{{ svm_1_lif_netmask }}"
       dns_domain_name: "{{ dns_domains[0] }}"
       <<: *login
 
