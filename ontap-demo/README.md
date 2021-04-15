@@ -15,6 +15,12 @@ The playbook create an SVL with one volume and a share named Vol_Data.
 ```
 ansible-playbook 02_create_svm_DR.yml
 ```
+The default behaviour will create an SVM DR using a different "identity" and a new data IP.
+You could use the TAG preserve-identity to create an SVM DR with same name and IP of the source.
+```
+ansible-playbook 02_create_svm_DR.yml --tags preserve-identity
+```
+
 
 ### Requirements:
 To use these playbooks a snapshot named **daily.0** must exist in each svm_src volume on production SVM.
