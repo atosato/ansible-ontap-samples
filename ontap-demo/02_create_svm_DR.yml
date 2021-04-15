@@ -48,11 +48,12 @@
         - name: Create vserver SnapMirror
           na_ontap_snapmirror:
             state: present
-#            source_endpoint: {cluster: "{{ Cluster_A_IP }}", path: "{{ svm_1 }}:"}
-#            destination_endpoint: {cluster: "{{ Cluster_B_IP }}", path: "{{ svm_1 }}-dr:"}
+            #source_endpoint: {cluster: "{{ Cluster_A_name }}", svm: "{{ svm_1 }}", path: "{{ svm_1 }}:"}
+            #destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_DR }}", path: "{{ svm_DR }}:"}
             source_vserver: "{{ svm_1 }}"
             destination_vserver: "{{ svm_1 }}-dr"
             identity_preserve: false
+            relationship_state: active
             schedule: "5min"
             <<: *login
         - name: Setup DNS
