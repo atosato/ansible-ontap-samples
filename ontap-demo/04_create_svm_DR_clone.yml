@@ -87,7 +87,6 @@
   - name: Clone Volume from {{ svm_src }} to {{ svm_clone }}
     na_ontap_volume_clone:
       state: present
-      <<: *login
       vserver: "{{ svm_clone }}"
       parent_vserver: "{{ svm_src }}"
       parent_volume: "{{ item.value.volume_id_attributes.name }}"
@@ -95,6 +94,7 @@
       name: "{{ item.value.volume_id_attributes.name }}"
       space_reserve: none
       #junction_path: "/{{ item.value.volume_id_attributes.name }}"
+      <<: *login      
     with_dict: "{{ ontap_info.ontap_info.volume_info }}"
     when: item.value.volume_id_attributes.owning_vserver_name == svm_src and item.value.volume_state_attributes.is_vserver_root == "false"
 

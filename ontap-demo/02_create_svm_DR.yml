@@ -7,6 +7,7 @@
     - vars/vars_demo.yml
     - vars/vars_demo_login.yml
   vars:
+    snapMirrorPolicy: "MirrorAllSnapshots"
     login: &login
       hostname: "{{ Cluster_B_IP }}"
       username: "{{ Cluster_B_username }}"
@@ -39,7 +40,8 @@
         source_vserver: "{{ svm_1 }}"
         destination_vserver: "{{ svm_1_DR_name }}"
         identity_preserve: true
-        schedule: "5min"
+        policy: "{{ snapMirrorPolicy }}"
+        #schedule: "5min"
         <<: *login
       tags: [never, preserve-identity]
 
@@ -54,7 +56,8 @@
             destination_vserver: "{{ svm_1_DR_name }}"
             identity_preserve: false
             relationship_state: active
-            schedule: "5min"
+            policy: "{{ snapMirrorPolicy }}"
+            #schedule: "5min"
             <<: *login
         - name: Setup DNS
           na_ontap_dns:

@@ -1,0 +1,56 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_demo.yml
+    - vars/vars_demo_login.yml
+  vars:
+    svm_src: "{{ svm_1 }}"
+    svm_DR: "{{ svm_1_DR_name }}"
+    snapshot_to_clone_name: "{{ src_snapshot_to_clone }}"
+    login: &loginA
+      hostname: "{{ Cluster_A_IP }}"
+      username: "{{ Cluster_A_username }}"
+      password: "{{ Cluster_A_password }}"
+      https: yes
+      validate_certs: no
+    login: &loginB
+      hostname: "{{ Cluster_B_IP }}"
+      username: "{{ Cluster_B_username }}"
+      password: "{{ Cluster_B_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+  - name: Get ALL volumes
+    na_ontap_info:
+      state: info
+      <<: *loginA
+      gather_subset:
+        - volume_info
+    register: ontap_info
+  - debug:
+     msg: "{{ ontap_info.ontap_info }}"
+    tags: [never, debug]
+
+  - name: Create Snapshot in ALL Volumes
+    na_ontap_snapshot:
+      state: present
+      snapshot: "{{ snapshot_to_clone_name }}"
+      volume: "{{ item.value.volume_id_attributes.name }}"
+      vserver: "{{ svm_src }}"
+      <<: *loginA
+    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
+    when: item.value.volume_id_attributes.owning_vserver_name == svm_src and item.value.volume_state_attributes.is_vserver_root == "false"
+
+  - name: Update Snapmirror relationship
+    na_ontap_snapmirror:
+      state: present
+      source_endpoint: {cluster: "{{ Cluster_A_name }}", path: "{{ svm_src }}:"}
+      destination_endpoint: {cluster: "{{ Cluster_B_name }}", path: "{{ svm_DR }}:"}
+      #policy: "Asynchronous"
+      update: True
+      relationship_state: active
+      #source_hostname: "{{ Cluster_A_IP }}"
+      <<: *loginB

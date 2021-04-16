@@ -1,45 +1,55 @@
 # Ontap - Ansible playbook samples
 ----
-This repository contains Ansible playbooks helping to automate the creation of an CIFS SVM (vserver) DR and an SVM Clone to check if the Disaster Recovery replicas are working fine..
+Ansible playbooks to automate SVM creation, replicate it on a different storage and clone it to Test the DR procedure.
 
-Edit vars with the ONTAP cluster information: vars/vars_demo.yml
-Edit vars with the ONTAP cluster Login information: vars/vars_demo_login.yml
+Edit vars file and fill values with your environment information: vars/vars_demo.yml
+Edit vars file Login information: vars/vars_demo_login.yml
 
-### Create production NAS SVM:
+### Create production NAS SVM on ONTAP Cluster A:
+This playbook create an SVM with one Volume and a Share named "Vol_Data".
 ```
 ansible-playbook 01_create_svm_nas.yml
 ```
-The playbook create an SVL with one volume and a share named Vol_Data.
 
-### Create SVM DR:
+### Create SVM DR on ONTAP Cluster B:
+This playbook create a new SVM on DR storage an mirror all Volumes, Shares and ACL
 ```
 ansible-playbook 02_create_svm_DR.yml
 ```
-The default behaviour will create an SVM DR using a different "identity" and a new data IP.
+The default behavior will create an SVM DR using a different "identity" and a new data IP is required.
+The SVM with a new Identity could be started and used to access replicated data in Read-Only.
 You could use the TAG preserve-identity to create an SVM DR with same name and IP of the source.
 ```
 ansible-playbook 02_create_svm_DR.yml --tags preserve-identity
 ```
 
-
-### Requirements:
-To use these playbooks a snapshot named **daily.0** must exist in each svm_src volume on production SVM.
-Ontap could automatically schedule daily.0 creation changing the dafault naming convention:
+### Create a Snapshot on production to be cloned on DR:
+This playbook create a new Snapshot on all production Volumes and will update the mirror to replicate them on DR.
 ```
-cluster> vol modify -volume <vol_name> -vserver <svm_src> -sched-snap-name ordinal
+ansible-playbook 03_create_svm_nas_snapshots_and_update_mirror.yml
 ```
 
 ### Create a cloned SVM to test the DR environment:
+To test the DR environment accessing data in Read-Write is possible to Clone the SVM-DR using the following playbook:
 ```
-ansible-playbook 03_create_svm_DR_clone.yml
+ansible-playbook 04_create_svm_DR_clone.yml
 ```
 
-### Delete the cloned SVM:
-If the clone is created in a test environment you could use the following playbook to delete all Volumes and Shares existing in svm_clone:
-
+### LAB Cleanup - Delete ALL the SVMs:
 **WARNING: POSSIBLE DATA LOSS!!! - This playbook delete all the data present in the target SVM - Use it in a TEST environment ONLY**
+DELETE SVM DR Clone on ONTAP Cluster B:
 ```
-ansible-playbook 93_DELETE_svm_DR_clone.yml
+ansible-playbook 94_DELETE_svm_DR_clone.yml
+```
+
+DELETE SVM DR on ONTAP Cluster B:
+```
+ansible-playbook 92_DELETE_svm_DR.yml
+```
+
+DELETE production SVM on ONTAP Cluster A:
+```
+ansible-playbook 91_DELETE_svm_nas.yml
 ```
 
 ----
