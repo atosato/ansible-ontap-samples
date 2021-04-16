@@ -1,6 +1,0 @@
-svm_src: "svm-src-name" #<- SVM Source name or IP
-svm_clone: "svm-backup-name" #<- SVM Backup name or IP
-clone_export_policy: "backup_NFS" #<- Export Policy to assign to cloned Volumes
-vars_hostname: "xx.xx.xx.xx" #<- ONTAP Cluster MGMT IP
-vars_username: "admin" #<- Ontap cluster admin - SET ONLY IF vars_prompt NOT USED
-vars_password: "password" #<- Ontap cluster password - SET ONLY IF vars_prompt NOT USED
