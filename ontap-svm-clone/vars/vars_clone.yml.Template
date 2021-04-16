@@ -1,5 +1,0 @@
-svm_src: "svm-src-name" #<- SVM Source name or IP
-svm_clone: "svm-clone-name" #<- SVM Clone name or IP
-vars_hostname: "xx.xx.xx.xx" #<- ONTAP Cluster MGMT IP
-vars_username: "admin" #<- Ontap cluster admin - SET ONLY IF vars_prompt NOT USED
-vars_password: "password" #<- Ontap cluster password - SET ONLY IF vars_prompt NOT USED
