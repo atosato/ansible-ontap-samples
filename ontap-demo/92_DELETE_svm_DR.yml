@@ -11,7 +11,7 @@
     - vars/vars_demo.yml
     - vars/vars_demo_login.yml
   vars:
-    svm_DR: "{{ svm_1 }}-dr"
+    svm_DR: "{{ svm_1_DR_name }}"
     svm_clone: "{{ svm_DR_clone }}"
     login: &login
       hostname: "{{ Cluster_B_IP }}"
@@ -29,6 +29,7 @@
         - cifs_server_info
         - cifs_share_info
     register: ontap_info
+    tags: always
   - debug:
      msg: "{{ ontap_info.ontap_info }}"
     tags: [never, debug]
@@ -54,53 +55,56 @@
   - pause:
       seconds: 5
 
-  - name: Delete vserver SnapMirror DR relationship
-    na_ontap_snapmirror:
-      state: absent
-      source_endpoint: {cluster: "{{ Cluster_A_name }}", svm: "{{ svm_1 }}", path: "{{ svm_1 }}:"}
-      destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_DR }}", path: "{{ svm_DR }}:"}
-      relationship_info_only: True
-      source_hostname: "{{ Cluster_A_IP }}"
-      <<: *login
+  - name: Remove SnapMirror relationship and DELETE SVM DR
+    block:
+      - name: Delete vserver SnapMirror DR relationship
+        na_ontap_snapmirror:
+          state: absent
+          source_endpoint: {cluster: "{{ Cluster_A_name }}", svm: "{{ svm_1 }}", path: "{{ svm_1 }}:"}
+          destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_DR }}", path: "{{ svm_DR }}:"}
+          relationship_info_only: True
+          source_hostname: "{{ Cluster_A_IP }}"
+          <<: *login
 
-  - pause:
-      seconds: 5
+      - pause:
+          seconds: 8
 
-  - name: Delete vserver Peer
-    na_ontap_vserver_peer:
-      state: absent
-      peer_vserver: "{{ svm_1 }}"
-      peer_cluster: "{{ Cluster_A_IP }}"
-      dest_hostname: "{{ Cluster_A_IP }}"
-      vserver: "{{ svm_DR }}"
-      applications: ["snapmirror"]
-      <<: *login
+      - name: Delete vserver Peer
+        na_ontap_vserver_peer:
+          state: absent
+          peer_vserver: "{{ svm_1 }}"
+          peer_cluster: "{{ Cluster_A_IP }}"
+          dest_hostname: "{{ Cluster_A_IP }}"
+          vserver: "{{ svm_DR }}"
+          applications: ["snapmirror"]
+          <<: *login
 
-  - name: Delete ALL Volumes
-    na_ontap_volume:
-      state: absent
-      name: "{{ item.value.volume_id_attributes.name }}"
-      vserver: "{{ svm_DR }}"
-      <<: *login
-    with_dict: "{{ ontap_info.ontap_info.volume_info }}"
-    when: item.value.volume_id_attributes.owning_vserver_name == svm_DR and item.value.volume_state_attributes.is_vserver_root == "false"
+      - name: Delete ALL Volumes
+        na_ontap_volume:
+          state: absent
+          name: "{{ item.value.volume_id_attributes.name }}"
+          vserver: "{{ svm_DR }}"
+          <<: *login
+        with_dict: "{{ ontap_info.ontap_info.volume_info }}"
+        when: item.value.volume_id_attributes.owning_vserver_name == svm_DR and item.value.volume_state_attributes.is_vserver_root == "false"
 
-  - name: "UNJOIN from Active Directory"
-    na_ontap_cifs_server:
-      state: absent
-      vserver: "{{ svm_DR }}"
-      name: "{{ svm_DR }}"
-      domain: "{{ item.value.domain }}"
-      #admin_user_name: "" #Force unjoin withouth a login
-      #admin_password: ""
-      admin_user_name: "{{ AD_username }}"
-      admin_password: "{{ AD_password }}"
-      force: "yes"
-      <<: *login
-    with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+      - name: "UNJOIN from Active Directory"
+        na_ontap_cifs_server:
+          state: absent
+          vserver: "{{ svm_DR }}"
+          name: "{{ svm_DR }}"
+          domain: "{{ item.value.domain }}"
+          #admin_user_name: "" #Force unjoin withouth a login
+          #admin_password: ""
+          admin_user_name: "{{ AD_username }}"
+          admin_password: "{{ AD_password }}"
+          force: "yes"
+          <<: *login
+        with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
 
-  - name: Delete SVM
-    na_ontap_svm:
-      state: absent
-      name: "{{ svm_DR }}"
-      <<: *login
+      - name: Delete SVM
+        na_ontap_svm:
+          state: absent
+          name: "{{ svm_DR }}"
+          <<: *login
+    tags: mirror-broken
