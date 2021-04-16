@@ -17,7 +17,7 @@
     - name: Create a new SVM DR
       na_ontap_svm:
         state: present
-        name: "{{ svm_1 }}-dr"
+        name: "{{ svm_1_DR_name }}"
         subtype: "dp_destination"
         <<: *login
       tags: always
@@ -28,7 +28,7 @@
         peer_vserver: "{{ svm_1 }}"
         peer_cluster: "{{ Cluster_A_name }}"
         dest_hostname: "{{ Cluster_A_IP }}"
-        vserver: "{{ svm_1 }}-dr"
+        vserver: "{{ svm_1_DR_name }}"
         applications: ["snapmirror"]
         <<: *login
       tags: always
@@ -37,7 +37,7 @@
       na_ontap_snapmirror:
         state: present
         source_vserver: "{{ svm_1 }}"
-        destination_vserver: "{{ svm_1 }}-dr"
+        destination_vserver: "{{ svm_1_DR_name }}"
         identity_preserve: true
         schedule: "5min"
         <<: *login
@@ -49,9 +49,9 @@
           na_ontap_snapmirror:
             state: present
             #source_endpoint: {cluster: "{{ Cluster_A_name }}", svm: "{{ svm_1 }}", path: "{{ svm_1 }}:"}
-            #destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_DR }}", path: "{{ svm_DR }}:"}
+            #destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_1_DR_name }}", path: "{{ svm_1_DR_name }}:"}
             source_vserver: "{{ svm_1 }}"
-            destination_vserver: "{{ svm_1 }}-dr"
+            destination_vserver: "{{ svm_1_DR_name }}"
             identity_preserve: false
             relationship_state: active
             schedule: "5min"
@@ -59,7 +59,7 @@
         - name: Setup DNS
           na_ontap_dns:
             state: present
-            vserver:  "{{ svm_1 }}-dr"
+            vserver:  "{{ svm_1_DR_name }}"
             domains: "{{ dns_domains }}"
             nameservers: "{{ dns_ips }}"
             skip_validation: true
@@ -67,7 +67,7 @@
         - name: Create a new data LIF for the SVM
           na_ontap_interface:
             state: present
-            vserver: "{{ svm_1 }}-dr"
+            vserver: "{{ svm_1_DR_name }}"
             interface_name: "{{ svm_1_DR_lif_name }}"
             home_port: "{{ svm_1_DR_lif_home_port }}"
             home_node: "{{ svm_1_DR_lif_home_node }}"
@@ -79,18 +79,18 @@
             netmask: "{{ svm_1_DR_lif_netmask }}"
             dns_domain_name: "{{ dns_domains[0] }}"
             <<: *login
-        - name: Start {{ svm_1 }}-dr
+        - name: Start {{ svm_1_DR_name }}
           na_ontap_command:
             <<: *login
-            command: ['vserver', 'start', '-vserver {{ svm_1 }}-dr']
+            command: ['vserver', 'start', '-vserver {{ svm_1_DR_name }}']
             privilege: 'admin'
             return_dict: true
-        - name: Join {{ svm_1 }}-dr to Active Directory
+        - name: Join {{ svm_1_DR_name }} to Active Directory
           na_ontap_cifs_server:
             state: present
             service_state: started
-            vserver: "{{ svm_1 }}-dr"
-            name: "{{ svm_1 }}-dr"
+            vserver: "{{ svm_1_DR_name }}"
+            name: "{{ svm_1_DR_name }}"
             domain: "{{ AD }}"
             admin_user_name: "{{ AD_username }}"
             admin_password: "{{ AD_password }}"
