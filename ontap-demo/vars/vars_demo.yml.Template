@@ -1,13 +1,13 @@
 #####################################################
 # Cluster A Information
 #####################################################
-Cluster_A_name: "OntapSelect-Ansible-ClusterA" #<- ONTAP Cluster MGMT IP
+Cluster_A_name: "OntapSelect-ClusterA" #<- ONTAP Cluster MGMT IP
 Cluster_A_IP: "192.168.1.251" #<- ONTAP Cluster MGMT IP
 
 #####################################################
 # Cluster B Information
 #####################################################
-Cluster_B_name: "OntapSelect-Ansible-ClusterB" #<- ONTAP Cluster MGMT IP
+Cluster_B_name: "OntapSelect-ClusterB" #<- ONTAP Cluster MGMT IP
 Cluster_B_IP: "192.168.1.252" #<- ONTAP Cluster MGMT IP
 
 #####################################################
@@ -26,24 +26,38 @@ dns_domains:
 #####################################################
 svm_1: "svm-nas" #<- SVM name
 svm_1_root: "svm_nas_root"
-svm_1_lif_name: "svm_nas_data_LIF"
+svm_1_lif_name: "svm_nas_data_LIF" # SVM name
 svm_1_lif_address: "192.168.1.241"
 svm_1_lif_netmask: "255.255.254.0"
 svm_1_lif_home_port: "e0a"
-svm_1_lif_home_node: "OntapSelect-Ansible-ClusterA-01"
+svm_1_lif_home_node: "OntapSelect-ClusterA-01"
 svm_1_lif_role: "data"
 svm_1_lif_protocol: "cifs"
+
+#####################################################
+# SVM DR - SVM DR Information
+# USED ONLY IF CHANGE-IDENTITY
+#####################################################
+svm_1_DR_name: "svm_nas-dr"
+svm_1_DR_lif_name: "svm_nas_DR_data_LIF"
+svm_1_DR_lif_address: "192.168.1.242"
+svm_1_DR_lif_netmask: "255.255.254.0"
+svm_1_DR_lif_home_port: "e0a"
+svm_1_DR_lif_home_node: "OntapSelect-ClusterB-01"
+svm_1_DR_lif_role: "data"
+svm_1_DR_lif_protocol: "cifs"
 
 
 #####################################################
 # SVM DR clone Information
 #####################################################
-svm_DR_clone: "svm-nas-clone" #<- SVM name
+src_snapshot_to_clone: "SnapToClone" # Snapshot name to be cloned
+svm_DR_clone: "svm-nas-clone" # SVM name
 svm_DR_clone_root: "svm_nas_DR_clone_root"
 svm_DR_clone_lif_name: "svm_nas_DR_clone_data_LIF"
 svm_DR_clone_lif_address: "192.168.1.245"
 svm_DR_clone_lif_netmask: "255.255.254.0"
 svm_DR_clone_lif_home_port: "e0a"
-svm_DR_clone_lif_home_node: "OntapSelect-Ansible-ClusterB-01"
+svm_DR_clone_lif_home_node: "OntapSelect-ClusterB-01"
 svm_DR_clone_lif_role: "data"
 svm_DR_clone_lif_protocol: "cifs"
