@@ -16,7 +16,7 @@ Create a Python virtual environment:
 python3 -m venv venv
 source venv/bin/activate
 pip3 install --upgrade pip setuptools wheel
-pip install pip-tools
+pip3 install pip-tools
 pip-sync
 ```
 If you want to update the requirements libs version:
