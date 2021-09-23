@@ -4,10 +4,10 @@
 #
 #    pip-compile
 #
-ansible-base==2.10.7
-    # via ansible
-ansible==3.2.0
+ansible==4.2.0
     # via -r requirements.in
+ansible-core==2.11.5
+    # via ansible
 certifi==2020.12.5
     # via requests
 cffi==1.14.5
@@ -15,11 +15,11 @@ cffi==1.14.5
 chardet==4.0.0
     # via requests
 cryptography==3.4.7
-    # via ansible-base
+    # via ansible-core
 idna==2.10
     # via requests
 jinja2==2.11.3
-    # via ansible-base
+    # via ansible-core
 lxml==4.6.3
     # via netapp-lib
 markupsafe==1.1.1
@@ -27,7 +27,7 @@ markupsafe==1.1.1
 netapp-lib==2020.7.16
     # via -r requirements.in
 packaging==20.9
-    # via ansible-base
+    # via ansible-core
 pycparser==2.20
     # via cffi
 pyparsing==2.4.7
@@ -35,11 +35,13 @@ pyparsing==2.4.7
 pyvmomi==7.0.2
     # via -r requirements.in
 pyyaml==5.4.1
-    # via ansible-base
+    # via ansible-core
 requests==2.25.1
     # via
     #   -r requirements.in
     #   pyvmomi
+resolvelib==0.5.4
+    # via ansible-core
 six==1.15.0
     # via pyvmomi
 urllib3==1.26.5
