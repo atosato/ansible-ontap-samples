@@ -51,6 +51,12 @@ ansible-playbook -i inventory.txt 03_create_OntapSelect-ClusterB.yml
 The new Ontap Select cluster will appear in the Ontap Deploy Dashbord.
 It's possible to access to Ontap Select typing **https://<Ontap_Select_IP>/sysmgr/** in your browser with username and password used in the vars files.
 
+To create a peering between Ontap clusters:
+- Edit `vars/vars_intercluster_IPs.yml` with your Intercluster IPs variables.
+```
+ansible-playbook 04_create_clusters_peer.yml
+```
+
 
 ----
 # LICENSE
