@@ -28,12 +28,16 @@ pip-sync
 To use these playbooks you need to install the **NetApp Ansible ONTAP collection**: <link>https://github.com/ansible-collections/ansible_collections_netapp</link>.
 ```
 ansible-galaxy collection install netapp.ontap
+
+For specific release:
+ansible-galaxy collection install netapp.ontap:21.10.0
 ```
 
 **Tested with:**
  - Ansible:
     * 2.10.7
  - Collection:
+    * netapp.ontap 21.10
     * netapp.ontap 21.4.0
  - Ontap Select:
     * ONTAPSELECT9.8.ova
