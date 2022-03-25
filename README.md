@@ -29,16 +29,15 @@ To use these playbooks you need to install the **NetApp Ansible ONTAP collection
 ```
 ansible-galaxy collection install netapp.ontap
 
-For specific release:
+To install a specific release:
 ansible-galaxy collection install netapp.ontap:21.10.0
 ```
 
 **Tested with:**
  - Ansible:
-    * 2.10.7
+    * 2.12.3
  - Collection:
-    * netapp.ontap 21.10
-    * netapp.ontap 21.4.0
+    * netapp.ontap 21.13.1
  - Ontap Select:
     * ONTAPSELECT9.8.ova
 
