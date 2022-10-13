@@ -42,7 +42,7 @@ Be sure that `na_ots_cluster/` role is installed in the repository. `cp ../NetAp
 - Edit `vars/vars_cluster.yml` with your environment variables.
 - Edit `vars/vars_cluster_pwd.yml` with your Vcenter and Ontap passwords.
 
-**Run the playbook:**
+**Run the playbooks:**
 ```
 ansible-playbook -i inventory.txt 02_create_OntapSelect-ClusterA.yml
 ansible-playbook -i inventory.txt 03_create_OntapSelect-ClusterB.yml
