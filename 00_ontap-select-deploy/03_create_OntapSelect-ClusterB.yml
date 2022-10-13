@@ -41,6 +41,7 @@
         interface_name: Intercluster_LIF
         home_port: e0c
         home_node: "{{ item.node_name }}"
+        ipspace: "Default"
         role: intercluster
         admin_status: up
         is_auto_revert: true
