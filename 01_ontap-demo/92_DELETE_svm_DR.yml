@@ -48,8 +48,11 @@
     na_ontap_snapmirror:
       state: present
       relationship_state: broken
-      source_endpoint: {cluster: "{{ Cluster_A_name }}", svm: "{{ svm_1 }}", path: "{{ svm_1 }}:"}
-      destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_DR }}", path: "{{ svm_DR }}:"}
+      source_endpoint: {cluster: "{{ Cluster_A_name }}", path: "{{ svm_1 }}:"}
+      destination_endpoint: {cluster: "{{ Cluster_B_name }}", path: "{{ svm_DR }}:"}
+      feature_flags:
+        trace_apis: true # log api and response in the path - /tmp/ontap_apis.log
+
       <<: *login
 
   - pause:

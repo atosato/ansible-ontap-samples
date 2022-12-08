@@ -21,15 +21,6 @@
       root_volume: "{{ svm_1_root }}"
       <<: *login
 
-  - name: Setup DNS for the SVM
-    na_ontap_dns:
-      state: present
-      vserver:  "{{ svm_1 }}"
-      domains: "{{ dns_domains }}"
-      nameservers: "{{ dns_ips }}"
-      skip_validation: true
-      <<: *login
-
   - name: Create a new data LIF for the SVM
     na_ontap_interface:
       state: present
@@ -44,6 +35,15 @@
       address: "{{ svm_1_lif_address }}"
       netmask: "{{ svm_1_lif_netmask }}"
       dns_domain_name: "{{ dns_domains[0] }}"
+      <<: *login
+
+  - name: Setup DNS for the SVM
+    na_ontap_dns:
+      state: present
+      vserver:  "{{ svm_1 }}"
+      domains: "{{ dns_domains }}"
+      nameservers: "{{ dns_ips }}"
+      #skip_validation: true
       <<: *login
 
   - name: "Join {{ svm_1 }} to Active Directory as {{ svm_1 }}"
@@ -77,5 +77,5 @@
       share_name: "Vol_Data"
       path: "/Vol_Data"
       vserver: "{{ svm_1 }}"
-      symlink_properties: read_only,enable
+      #symlink_properties: read_only,enable
       <<: *login

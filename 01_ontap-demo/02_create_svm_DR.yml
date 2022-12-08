@@ -7,7 +7,8 @@
     - vars/vars_demo.yml
     - vars/vars_demo_login.yml
   vars:
-    snapMirrorPolicy: "MirrorAllSnapshots"
+    #snapMirrorPolicy: "MirrorAllSnapshotsDiscardNetwork"
+    snapMirrorPolicy: "MirrorAndVault"
     login: &login
       hostname: "{{ Cluster_B_IP }}"
       username: "{{ Cluster_B_username }}"
@@ -47,25 +48,17 @@
 
     - name: Create vserver DR and Mirror - CHANGE IDENTITY
       block:
-        - name: Create vserver SnapMirror
+        - name: Create vserver DR and Mirror - CHANGE IDENTITY
           na_ontap_snapmirror:
             state: present
-            #source_endpoint: {cluster: "{{ Cluster_A_name }}", svm: "{{ svm_1 }}", path: "{{ svm_1 }}:"}
-            #destination_endpoint: {cluster: "{{ Cluster_B_name }}", svm: "{{ svm_1_DR_name }}", path: "{{ svm_1_DR_name }}:"}
-            source_vserver: "{{ svm_1 }}"
-            destination_vserver: "{{ svm_1_DR_name }}"
-            identity_preserve: false
+            source_endpoint: {cluster: "{{ Cluster_A_name }}", path: "{{ svm_1 }}:"}
+            destination_endpoint: {cluster: "{{ Cluster_B_name }}", path: "{{ svm_1_DR_name }}:"}
+            #identity_preserve: false
             relationship_state: active
             policy: "{{ snapMirrorPolicy }}"
+            initialize: false
+            use_rest: always
             #schedule: "5min"
-            <<: *login
-        - name: Setup DNS
-          na_ontap_dns:
-            state: present
-            vserver:  "{{ svm_1_DR_name }}"
-            domains: "{{ dns_domains }}"
-            nameservers: "{{ dns_ips }}"
-            skip_validation: true
             <<: *login
         - name: Create a new data LIF for the SVM
           na_ontap_interface:
@@ -81,13 +74,26 @@
             address: "{{ svm_1_DR_lif_address }}"
             netmask: "{{ svm_1_DR_lif_netmask }}"
             dns_domain_name: "{{ dns_domains[0] }}"
+            #failover_scope: home_node_only
+            #service_policy: default-data-files
             <<: *login
         - name: Start {{ svm_1_DR_name }}
-          na_ontap_command:
+          netapp.ontap.na_ontap_svm:
+            state: present
+            name: "{{ svm_1_DR_name }}"
+            admin_state: running
+            use_rest: always
             <<: *login
-            command: ['vserver', 'start', '-vserver {{ svm_1_DR_name }}']
-            privilege: 'admin'
-            return_dict: true
+        - name: Setup DNS
+          na_ontap_dns:
+            state: present
+            vserver:  "{{ svm_1_DR_name }}"
+            domains: "{{ dns_domains }}"
+            nameservers: "{{ dns_ips }}"
+            #skip_validation: true
+            use_rest: always
+            <<: *login
+#   This operation is not permitted on a SVM that is configured as the destination for SVM DR. (Starting from Ontap 9.11)
         - name: Join {{ svm_1_DR_name }} to Active Directory
           na_ontap_cifs_server:
             state: present
@@ -98,5 +104,8 @@
             admin_user_name: "{{ AD_username }}"
             admin_password: "{{ AD_password }}"
             force: "yes"
+            use_rest: always
+            feature_flags:
+              trace_apis: true # log api and response in the path - /tmp/ontap_apis.log
             <<: *login
       tags: change-identity

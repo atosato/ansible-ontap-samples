@@ -37,7 +37,7 @@ ansible-galaxy collection install netapp.ontap:21.24.1
  - Ansible:
     * 2.13.6
  - Collection:
-    * netapp.ontap 22.0.1
+    * netapp.ontap 22.1.0
  - Ontap Select:
     * ONTAPSELECT_9121RC1.ova
 
