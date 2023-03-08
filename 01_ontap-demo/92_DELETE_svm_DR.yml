@@ -34,16 +34,6 @@
      msg: "{{ ontap_info.ontap_info }}"
     tags: [never, debug]
 
-  # - name: Delete ALL CIFS shares in "{{ svm_DR }}"
-  # # NOTE: The AD Unjoin task will remove all the shares so this task is useless. Kept for demo usage.
-  #   na_ontap_cifs:
-  #     state: absent
-  #     share_name: "{{ item.value.share_name }}"
-  #     vserver: "{{ svm_DR }}"
-  #     <<: *login
-  #   with_dict: "{{ ontap_info.ontap_info.cifs_share_info }}"
-  #   when: item.value.vserver == svm_DR and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
-
   - name: Break SnapMirror
     na_ontap_snapmirror:
       state: present
@@ -91,6 +81,17 @@
         with_dict: "{{ ontap_info.ontap_info.volume_info }}"
         when: item.value.volume_id_attributes.owning_vserver_name == svm_DR and item.value.volume_state_attributes.is_vserver_root == "false"
 
+      - name: Delete ALL CIFS shares in "{{ svm_DR }}"
+      # NOTE: The AD Unjoin task will remove all the shares so this task is useless. Kept for demo usage.
+        na_ontap_cifs:
+          state: absent
+          share_name: "{{ item.value.share_name }}"
+          vserver: "{{ svm_DR }}"
+          <<: *login
+        #with_dict: "{{ ontap_info.ontap_info.cifs_share_info | ternary(ontap_info.ontap_info.cifs_server_info, {}) }}"
+        with_dict: "{{ ontap_info.ontap_info.cifs_share_info | ternary(ontap_info.ontap_info.cifs_share_info, {}) }}"
+        when: item.value.vserver == svm_DR and item.value.share_name != "c$" and item.value.share_name != "admin$" and item.value.share_name != "ipc$"
+
       - name: "UNJOIN from Active Directory"
         na_ontap_cifs_server:
           state: absent
@@ -101,9 +102,10 @@
           #admin_password: ""
           admin_user_name: "{{ AD_username }}"
           admin_password: "{{ AD_password }}"
-          force: "yes"
+          #force: "yes"
           <<: *login
-        with_dict: "{{ ontap_info.ontap_info.cifs_server_info }}"
+          use_rest: always
+        with_dict: "{{ ontap_info.ontap_info.cifs_server_info | ternary(ontap_info.ontap_info.cifs_server_info, {})}}" #ternary() is to handle unconfigured CIFS server
 
       - name: Delete SVM
         na_ontap_svm:
