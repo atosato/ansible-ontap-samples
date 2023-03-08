@@ -1,0 +1,54 @@
+---
+- hosts: localhost
+  gather_facts: false
+  collections:
+    - netapp.ontap
+  vars_files:
+    - vars/vars_demo.yml
+    - vars/vars_demo_login.yml
+  vars:
+    #snapMirrorPolicy: "MirrorAllSnapshotsDiscardNetwork"
+    snapMirrorPolicy: "MirrorAndVault"
+    login: &login
+      hostname: "{{ Cluster_B_IP }}"
+      username: "{{ Cluster_B_username }}"
+      password: "{{ Cluster_B_password }}"
+      https: yes
+      validate_certs: no
+  tasks:
+    - name: Create a new SVM DR
+      na_ontap_svm:
+        state: present
+        name: "{{ svm_1_DR_name }}"
+        subtype: "dp_destination"
+        <<: *login
+      tags: always
+
+    - name: Create vserver Peer
+      na_ontap_vserver_peer:
+        state: present
+        peer_vserver: "{{ svm_1 }}"
+        peer_cluster: "{{ Cluster_A_name }}"
+        dest_hostname: "{{ Cluster_A_IP }}"
+        vserver: "{{ svm_1_DR_name }}"
+        applications: ["snapmirror"]
+        <<: *login
+      tags: always
+    - name: Create SnapMirror SVM-DR Preserve Identity - SVM DR (creating and peering destination svm)
+      na_ontap_snapmirror:
+        state: present
+        source_endpoint:
+          cluster: "{{ Cluster_A_name }}"
+          path: "{{ svm_1 + ':' }}"
+        destination_endpoint:
+          cluster: "{{ Cluster_B_name }}"
+          path: "{{ svm_1_DR_name + ':' }}"
+        transferring_time_out: 60 #Manually set due to a BUG
+        identity_preservation: "full"
+        policy: "{{ snapMirrorPolicy }}"
+        initialize: true
+        create_destination:
+          enabled: true
+        use_rest: always
+        #schedule: "5min"
+        <<: *login
