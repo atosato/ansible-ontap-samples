@@ -56,7 +56,7 @@
             #identity_preserve: false
             relationship_state: active
             policy: "{{ snapMirrorPolicy }}"
-            initialize: false
+            initialize: true
             use_rest: always
             #schedule: "5min"
             <<: *login
