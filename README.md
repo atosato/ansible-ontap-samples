@@ -25,7 +25,7 @@ pip-compile requirements.in
 pip-sync
 ```
 
-To use these playbooks you need to install the **NetApp Ansible ONTAP collection**: <link>https://github.com/ansible-collections/ansible_collections_netapp</link>.
+To use these playbooks you need to install the **NetApp Ansible ONTAP collection**: <link>https://github.com/ansible-collections/netapp.ontap</link>.
 ```
 ansible-galaxy collection install netapp.ontap
 
@@ -35,11 +35,11 @@ ansible-galaxy collection install netapp.ontap:21.24.1
 
 **Tested with:**
  - Ansible:
-    * 2.13.6
+    * 2.14.3
  - Collection:
-    * netapp.ontap 22.1.0
+    * netapp.ontap 22.4.0
  - Ontap Select:
-    * ONTAPSELECT_9121RC1.ova
+    * ONTAPSELECT_9121.ova
 
 
 ----
