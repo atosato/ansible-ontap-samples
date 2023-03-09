@@ -36,7 +36,9 @@ Access to Ontap Deploy typing **https://<OntapDeploy_IP>** in your browser with 
 ----
 ## How to create a new Ontap Select cluster
 
-Be sure that `na_ots_cluster/` role is installed in the repository. `cp ../NetApp-ansible-roles/na_ots_cluster . -r`
+Be sure that `na_ots_cluster/` role is installed in the repository:
+  git clone https://github.com/NetApp-Automation/na_ots_deploy.git
+  git clone https://github.com/NetApp-Automation/na_ots_cluster.git
 
 - Edit the `inventory.txt` file with ESX cluster and Ontap Deploy information.
 - Edit `vars/vars_cluster.yml` with your environment variables.

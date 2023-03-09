@@ -23,7 +23,7 @@
     - import_role:
         name: na_ots_cluster
 
-    - name: Create Aggregates and wait 5 minutes until aggregate is online
+    - name: Create Aggregates and wait until aggregate is online
       na_ontap_aggregate:
         state: present
         service_state: online
@@ -41,6 +41,7 @@
         interface_name: Intercluster_LIF
         home_port: e0c
         home_node: "{{ item.node_name }}"
+        ipspace: "Default"
         role: intercluster
         admin_status: up
         is_auto_revert: true
