@@ -42,7 +42,7 @@ six==1.16.0
     # via
     #   netapp-lib
     #   pyvmomi
-urllib3==1.26.14
+urllib3==1.26.17
     # via requests
 xmltodict==0.13.0
     # via netapp-lib
